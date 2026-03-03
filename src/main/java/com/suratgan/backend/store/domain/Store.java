@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 
@@ -17,28 +19,48 @@ import java.util.List;
  * 4. 음식점 삭제 시 물리적인 삭제 대신 soft delete로 구현한다.
  */
 
-@Entity
 @Getter
+@ToString
+@Entity
 @Table(name="P_STORE")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private StoreId id;
 
+    @Embedded
     private Owner owner;
 
     private String storeName;
     private double rating;
     private int reviewCnt;
 
+    @Embedded
     private StoreLocation location;
 
     // 음식점 - 음식 관계
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "store_id")
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "P_STORE_PRODUCT", joinColumns = @JoinColumn(name="store_id"))
+    @SQLRestriction("deleted_at IS NULL")
+    @OrderColumn(name="product_idx")
     private List<Menu> menus;
 
     // 음식점 - 카테고리 관계
+    @ElementCollection(fetch=FetchType.LAZY)
+    @CollectionTable(name="P_STORE_CATEGORY", joinColumns=@JoinColumn(name="store_id"))
+    @SQLRestriction("deleted_at IS NULL")
+    @OrderColumn(name="category_idx")
+    private List<StoreCategory> categories;
 
+    // 음식점 생성(카테고리는 생성과 동시에 설정)
+
+    // 음식점 수정
+
+    // 음식점 삭제(Soft Delete)
+
+    // 주소 거리 계산
+    // 외부 구현 기술이 필요할 것으로 예상되어 인터페이스 생성 고려
+
+    // 리뷰 발생 시 평점 관련 이벤트 핸들러 필요
 }

@@ -1,6 +1,6 @@
 package com.suratgan.backend.store.domain;
 
-import com.suratgan.backend.global.domain.AddressToCoords;
+import com.suratgan.backend.global.domain.service.AddressToCoords;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
