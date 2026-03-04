@@ -4,13 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @ToString
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Owner {
     @Column(nullable = false)
-    private Long id;
+    private UUID id;
 
     @Column(length = 20, nullable = false)
     private String role;
@@ -19,7 +21,7 @@ public class Owner {
     private String name;
 
     @Builder
-    protected Owner(Long id, String role, String name) {
+    protected Owner(UUID id, String role, String name) {
         this.id = id;
         this.role = role;
         this.name = name;

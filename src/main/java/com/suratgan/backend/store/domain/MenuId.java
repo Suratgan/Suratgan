@@ -9,7 +9,7 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProductId {
+public class MenuId {
     private StoreId storeId;
-    private int productIdx;
+    private int menuIdx;
 }

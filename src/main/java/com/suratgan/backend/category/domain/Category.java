@@ -36,14 +36,6 @@ public class Category extends BaseEntity {
         this.categoryName = categoryName;
     }
 
-    // 권한 체크
-    private void checkAuthority(RoleCheck roleCheck) {
-        if (!roleCheck.hasRole(List.of("MANAGER", "MASTER"))) {
-            // 공통 Exception 로직 정의 후 추가
-            //throw new UnAuthorizedException();
-        }
-    }
-
     // 카테고리명 수정
     public void change(String categoryName, RoleCheck roleCheck) {
         checkAuthority(roleCheck);
@@ -56,5 +48,13 @@ public class Category extends BaseEntity {
         checkAuthority(roleCheck);
 
         deletedAt = LocalDateTime.now();
+    }
+
+    // 권한 체크
+    private void checkAuthority(RoleCheck roleCheck) {
+        if (!roleCheck.hasRole(List.of("MANAGER", "MASTER"))) {
+            // 공통 Exception 로직 정의 후 추가
+            //throw new UnAuthorizedException();
+        }
     }
 }
