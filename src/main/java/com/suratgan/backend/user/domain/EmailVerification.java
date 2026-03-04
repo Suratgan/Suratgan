@@ -1,5 +1,7 @@
 package com.suratgan.backend.user.domain;
 
+import com.suratgan.backend.global.exception.BusinessException;
+import com.suratgan.backend.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,10 +44,10 @@ public class EmailVerification {
 
     public void verify(String inputCode) {
         if (LocalDateTime.now().isAfter(expiredAt)) {
-            throw new IllegalStateException("인증 시간이 만료되었습니다.");
+            throw new BusinessException(ErrorCode.VERIFICATION_EXPIRED);
         }
         if(!this.code.equals(inputCode)) {
-            throw new IllegalStateException("인증 코드가 일치하지 않습니다.");
+            throw new BusinessException(ErrorCode.VERIFICATION_CODE_MISMATCH);
         }
         this.verified = true;
     }

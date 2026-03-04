@@ -1,12 +1,11 @@
 package com.suratgan.backend.user.application;
 
 
-import com.suratgan.backend.user.application.dto.SignupRequestDto;
 import com.suratgan.backend.global.exception.BusinessException;
 import com.suratgan.backend.global.exception.ErrorCode;
-import com.suratgan.backend.user.domain.Role;
-import com.suratgan.backend.user.domain.UserRepository;
+import com.suratgan.backend.user.application.dto.SignupRequestDto;
 import com.suratgan.backend.user.domain.User;
+import com.suratgan.backend.user.domain.UserRepository;
 import com.suratgan.backend.user.infrastructure.EmailVerificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,7 +40,7 @@ public class SignupService {
 
         User user = User.create(
                 request.getNickname(),
-                passwordEncoder.encode(encodedPassword),
+                encodedPassword,
                 request.getEmail(),
                 request.getRole()
         );

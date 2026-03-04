@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +42,9 @@ public class EmailVerificationService {
     }
 
     private String generate6DigitCode() {
-        int n = new Random().nextInt(900000) + 100000;
-        return String.valueOf((int)(Math.random() * 900000) + 100000);
+        SecureRandom random = new SecureRandom();
+        String code = String.format("%06d", random.nextInt(1_000_000));
+        return code;
     }
 
     public void verifyCode(String email, String code) {
