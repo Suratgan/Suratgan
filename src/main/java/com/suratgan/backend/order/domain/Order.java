@@ -3,15 +3,22 @@ package com.suratgan.backend.order.domain;
 import static com.suratgan.backend.order.domain.OrderStatus.ORDER_ACCEPT;
 
 import com.suratgan.backend.global.domain.BaseEntity;
+import com.suratgan.backend.order.domain.service.OrderCheck;
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,12 +57,30 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "P_ORDER_ITEM", joinColumns = @JoinColumn(name = "order_id"))
+    private List<OrderItem> orderItems = new ArrayList<>(); // null 방지
+
+    // 주문 상품 목록 설정
+    private void setOrderItems(List<OrderItem> orderItems, OrderCheck orderCheck) {
+        if (orderItems == null || orderItems.isEmpty()) {
+            throw new IllegalArgumentException("주문 상품은 1개 이상이어야 합니다.");
+        }
+
+        // TODO: StoreInfo 추가 후 주문 가능 상품 여부 검증 로직 구현
+
+        this.orderItems = new ArrayList<>(orderItems);  // 외부 리스트 변경 방지 위해 복사본 생성
+    }
+
     // 주문 생성
-    public static Order create(Orderer orderer) {
+    public static Order create(Orderer orderer, List<OrderItem> items, OrderCheck orderCheck) {
         Order order = new Order();
         order.id = OrderId.of();
         order.orderer = orderer;
         order.status = OrderStatus.ORDER_CREATING;
+
+        order.setOrderItems(items, orderCheck);
+
         return order;
     }
 
