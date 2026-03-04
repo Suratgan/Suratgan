@@ -6,7 +6,10 @@ import com.suratgan.backend.global.domain.BaseEntity;
 import com.suratgan.backend.order.domain.service.OrderCheck;
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
@@ -52,6 +55,9 @@ public class Order extends BaseEntity {
     private OrderId id;
 
     @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "id", column = @Column(name = "user_id")) // Orderer의 id를 DB에서는 user_id로 매핑
+    })
     private Orderer orderer;
 
     @Enumerated(EnumType.STRING)
