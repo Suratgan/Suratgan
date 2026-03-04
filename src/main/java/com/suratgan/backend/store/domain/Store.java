@@ -12,10 +12,7 @@ import org.apache.coyote.BadRequestException;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 0. 각 음식점은 OWNER 이상의 권한을 가진 사용자 중 반드시 하나의 사용자와 연결되어 관리 권한이 부여된다.
@@ -149,8 +146,34 @@ public class Store extends BaseEntity {
     }
     
     // 카테고리 수정
+    public void changeCategory(StoreDto.CategoryDto dto) {
+        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+
+        // 분류 유효성 검사
+        if (!dto.getCategoryCheck().exists(dto.getCategoryIds())) {
+            // 공통 Exception 로직 정의 후 추가
+            //throw new InvalidCategoryException("유효하지 않은 카테고리가 포함되어 있습니다.");
+        }
+
+        // 기존 카테고리 비우고 새로 생성
+        if (categories != null) categories.clear();
+        createCategory(dto);
+    }
     
     // 카테고리 삭제
+    public void removeCategory(StoreDto.CategoryDto dto) {
+        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+
+        if (categories == null || dto.getCategoryIds() == null) return;
+
+        // 삭제할 카테고리 아이디를 타겟으로 설정
+        Set<UUID> targetIds = new HashSet<>(dto.getCategoryIds());
+
+        // 삭제되지 않은 카테고리 중 타겟에 해당하는 카테고리를 해당 음식점 카테고리에서 삭제 
+        categories.stream()
+                .filter(c -> c.getDeletedAt() == null && targetIds.contains(c.getCategoryId()))
+                .forEach(StoreCategory::remove);
+    }
 
     // 권한 체크
     public void checkAuthority(RoleCheck roleCheck, OwnerCheck ownerCheck) {
