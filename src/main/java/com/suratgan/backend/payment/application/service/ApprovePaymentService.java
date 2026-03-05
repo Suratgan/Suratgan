@@ -37,8 +37,6 @@ public class ApprovePaymentService implements ApprovePayment {
         Payment payment = paymentRepository.findByOrderId(orderId)
                 .orElseGet(() -> saveOrGetExisting(orderId, approveAmount));
 
-        var tossRes = tossApprovePayment.approve(paymentKey, orderIdForToss, amount);
-
         payment.approve(paymentKey, approveAmount, null, null);
 
         return ApprovePaymentResult.builder()
@@ -55,7 +53,6 @@ public class ApprovePaymentService implements ApprovePayment {
         try {
             return paymentRepository.save(Payment.create(orderId, amount));
         } catch (DataIntegrityViolationException e) {
-            // 동시에 다른 요청이 먼저 insert한 케이스( order_id UNIQUE )
             return paymentRepository.findByOrderId(orderId)
                     .orElseThrow(() -> e);
         }
