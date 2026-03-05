@@ -5,6 +5,8 @@ import com.suratgan.backend.order.domain.Order;
 import com.suratgan.backend.order.domain.OrderId;
 import com.suratgan.backend.order.domain.OrderItem;
 import com.suratgan.backend.order.domain.Orderer;
+import com.suratgan.backend.order.domain.ProductInfo;
+import com.suratgan.backend.order.domain.StoreInfo;
 import com.suratgan.backend.order.domain.service.OrderCheck;
 import com.suratgan.backend.order.infrastructure.OrderRepository;
 import java.util.List;
@@ -32,14 +34,29 @@ public class OrderService {
             request.getOrdererEmail()
         );
 
-        List<OrderItem> items = request.getItems().stream()
-                .map(i -> OrderItem.of(
-                    i.getProductName(),
-                    i.getQuantity(),
-                    i.getPrice()
-                )).toList();
+        StoreInfo storeInfo = StoreInfo.of(
+            request.getStoreId(),
+            request.getStoreName(),
+            request.getStoreAddress(),
+            request.getStoreTel()
+        );
 
-        Order order = Order.create(orderer, items, orderCheck);
+        List<OrderItem> items = request.getItems().stream()
+                .map(i -> {
+                        ProductInfo productInfo = ProductInfo.builder()
+                            .code(i.getProductCode())
+                            .name(i.getProductName())
+                            .price(i.getPrice())
+                            .build();
+
+                        return OrderItem.builder()
+                            .item(productInfo)
+                            .quantity(i.getQuantity())
+                            .build();
+                })
+                .toList();
+
+        Order order = Order.create(orderer, storeInfo, items, orderCheck);
 
         orderRepository.save(order);
 

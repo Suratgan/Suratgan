@@ -1,7 +1,12 @@
 package com.suratgan.backend.order.domain;
 
+import com.suratgan.backend.global.domain.Price;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -12,22 +17,30 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
-    private String productName;
+    @Embedded
+    private ProductInfo item;
+
     private int quantity;
-    private int price;
 
-    protected OrderItem(String productName, int quantity, int price) {
-        this.productName = productName;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "price"))
+    private Price totalPrice; // (상품가) * (수량)
+
+    @Builder
+    protected OrderItem(ProductInfo item, int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
+        }
+
+        this.item = item;
         this.quantity = quantity;
-        this.price = price;
+
+        // 총 가격 계산
+        calculateTotalPrice();
     }
 
-    // DDD에서는 생성자를 Protected로 막아두고 정적 팩토리 메서드를 통해 객체를 생성하는 것을 권장한다.
-    public static OrderItem of(String productName, int quantity, int price) {
-        return new OrderItem(productName, quantity, price);
+    private void calculateTotalPrice() {
+        this.totalPrice = item.getPrice().multiply(quantity);
     }
 
-    public int getTotalPrice() {
-        return quantity * price;
-    }
 }

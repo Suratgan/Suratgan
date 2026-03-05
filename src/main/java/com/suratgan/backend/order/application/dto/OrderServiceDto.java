@@ -1,6 +1,7 @@
 package com.suratgan.backend.order.application.dto;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,12 +15,21 @@ public class OrderServiceDto {
         private String ordererName;
         private String ordererMobile;
         private String ordererEmail;
+
+        private UUID storeId;
+        private String storeName;
+        private String storeAddress;
+        private String storeTel;
+
         private List<Item> items;
     }
+
+
 
     @Getter
     @NoArgsConstructor
     public static class Item {
+        private String productCode;
         private String productName;
         private int quantity;
         private int price;

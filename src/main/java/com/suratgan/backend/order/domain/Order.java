@@ -3,11 +3,11 @@ package com.suratgan.backend.order.domain;
 import static com.suratgan.backend.order.domain.OrderStatus.ORDER_ACCEPT;
 
 import com.suratgan.backend.global.domain.BaseEntity;
+import com.suratgan.backend.global.domain.Price;
 import com.suratgan.backend.order.domain.service.OrderCheck;
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -55,39 +55,70 @@ public class Order extends BaseEntity {
     private OrderId id;
 
     @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "id", column = @Column(name = "user_id")) // Orderer의 id를 DB에서는 user_id로 매핑
-    })
+    @AttributeOverride(name = "id", column = @Column(name = "user_id"))
     private Orderer orderer;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    @Embedded
+    private StoreInfo storeInfo;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "P_ORDER_ITEM", joinColumns = @JoinColumn(name = "order_id"))
     private List<OrderItem> orderItems = new ArrayList<>(); // null 방지
 
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "total_amount"))
+    private Price totalOrderPrice; // 주문 상품 목록을 통해 계산된 총 주문 금액
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     // 주문 상품 목록 설정
     private void setOrderItems(List<OrderItem> orderItems, OrderCheck orderCheck) {
+
         if (orderItems == null || orderItems.isEmpty()) {
             throw new IllegalArgumentException("주문 상품은 1개 이상이어야 합니다.");
         }
 
-        // TODO: StoreInfo 추가 후 주문 가능 상품 여부 검증 로직 구현
+        if (!orderCheck.isOrderable(storeInfo.getStoreId(), orderItems)) {
+            throw new IllegalArgumentException("주문 상품 중 주문이 불가능한 상품이 있습니다.");
+        }
 
         this.orderItems = new ArrayList<>(orderItems);  // 외부 리스트 변경 방지 위해 복사본 생성
+        calculateTotalOrderPrice(); // 주문 상품 목록을 설정할 때 총 주문 금액 계산
     }
 
     // 주문 생성
-    public static Order create(Orderer orderer, List<OrderItem> items, OrderCheck orderCheck) {
+    public static Order create(Orderer orderer, StoreInfo storeInfo, List<OrderItem> items, OrderCheck orderCheck) {
+        if (orderer == null) {
+            throw new IllegalArgumentException("주문자는 필수입니다.");
+        }
+        if (storeInfo == null) {
+            throw new IllegalArgumentException("매장 정보는 필수입니다.");
+        }
+        if (orderCheck == null) {
+            throw new IllegalArgumentException("OrderCheck는 필수입니다.");
+        }
+
         Order order = new Order();
         order.id = OrderId.of();
         order.orderer = orderer;
+        order.storeInfo = storeInfo;
         order.status = OrderStatus.ORDER_CREATING;
 
         order.setOrderItems(items, orderCheck);
 
         return order;
+    }
+
+    // 금액 연산(add)은 Price VO가 담당하고 Order는 합산만 수행
+    private void calculateTotalOrderPrice() {
+        Price total = new Price(0);
+
+        for (OrderItem item : orderItems) {
+            total = total.add(item.getTotalPrice());
+        }
+
+        this.totalOrderPrice = total;
     }
 
     // 주문 접수
