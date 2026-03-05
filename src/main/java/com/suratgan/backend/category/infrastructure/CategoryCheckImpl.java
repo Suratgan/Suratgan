@@ -1,8 +1,8 @@
-package com.suratgan.backend.store.infrastructure;
+package com.suratgan.backend.category.infrastructure;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.suratgan.backend.category.domain.QCategory;
-import com.suratgan.backend.store.domain.service.CategoryCheck;
+import com.suratgan.backend.category.domain.service.CategoryCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

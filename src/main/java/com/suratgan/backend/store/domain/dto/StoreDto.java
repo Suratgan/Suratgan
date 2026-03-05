@@ -4,7 +4,7 @@ import com.suratgan.backend.global.domain.service.OwnerCheck;
 import com.suratgan.backend.global.domain.service.RoleCheck;
 import com.suratgan.backend.store.domain.Menu;
 import com.suratgan.backend.store.domain.StoreId;
-import com.suratgan.backend.store.domain.service.CategoryCheck;
+import com.suratgan.backend.category.domain.service.CategoryCheck;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -6,10 +6,9 @@ import com.suratgan.backend.global.domain.service.OwnerCheck;
 import com.suratgan.backend.global.domain.service.RoleCheck;
 import com.suratgan.backend.store.domain.dto.StoreDto;
 import com.suratgan.backend.store.domain.exception.MenuNotFoundException;
-import com.suratgan.backend.store.domain.service.CategoryCheck;
+import com.suratgan.backend.category.domain.service.CategoryCheck;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.coyote.BadRequestException;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;

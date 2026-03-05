@@ -1,4 +1,4 @@
-package com.suratgan.backend.store.domain.service;
+package com.suratgan.backend.category.domain.service;
 
 import java.util.List;
 import java.util.UUID;
