@@ -1,6 +1,8 @@
 package com.suratgan.backend.auth.infrastructure.jwt;
 
 import com.suratgan.backend.user.domain.Role;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -40,5 +42,13 @@ public class JwtTokenProvider {
 
     public long getAccessTokenExpiration() {
         return accessTokenMillis;
+    }
+
+    public Claims parseClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
