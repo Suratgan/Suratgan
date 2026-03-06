@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * User 작업 후 UserPrincipal을 이용한 User 정보 및 권한 검사 필요
@@ -29,7 +30,13 @@ public class CategoryController {
 
     @Operation(summary = "카테고리 수정")
     @PatchMapping
-    public ResponseEntity<String> updateCategories(@RequestBody @Valid List<CategoryDto> request) {
-        return categoryService.update(request);
+    public ResponseEntity<String> changeCategories(@RequestBody @Valid List<CategoryDto> request) {
+        return categoryService.change(request);
+    }
+
+    @Operation(summary = "카테고리 삭제")
+    @DeleteMapping
+    public ResponseEntity<String> removeCategories(@RequestBody @Valid List<UUID> ids) {
+        return categoryService.remove(ids);
     }
 }
