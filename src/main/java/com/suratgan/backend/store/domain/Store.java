@@ -48,14 +48,14 @@ public class Store extends BaseEntity {
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "P_STORE_MENU", joinColumns = @JoinColumn(name="store_id"))
     @SQLRestriction("deleted_at IS NULL")
-    @OrderColumn(name="menu_idx")
+    @OrderColumn(name="menu_orders")
     private List<Menu> menus;
 
     // 음식점 - 카테고리 관계
     @ElementCollection(fetch=FetchType.LAZY)
     @CollectionTable(name="P_STORE_CATEGORY", joinColumns=@JoinColumn(name="store_id"))
     @SQLRestriction("deleted_at IS NULL")
-    @OrderColumn(name="category_idx")
+    @OrderColumn(name="category_orders")
     private List<StoreCategory> categories;
 
     // 음식점 생성(카테고리는 생성과 동시에 설정)

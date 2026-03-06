@@ -24,7 +24,7 @@ import java.util.List;
 @SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu extends BaseEntity {
-    @EmbeddedId
+    @Embedded
     private MenuId id;
 
     @Column(length = 200, nullable = false)
@@ -44,7 +44,7 @@ public class Menu extends BaseEntity {
     // 메뉴 생성(객체 생성)
     @Builder
     protected Menu(StoreId storeId, int menuIdx, String name, String menuInfo, int price, String menuImg) {
-        this.id = new MenuId(storeId, menuIdx);
+        this.id = new MenuId(menuIdx);
         this.name = name;
         this.menuInfo = menuInfo;
         this.price = price;

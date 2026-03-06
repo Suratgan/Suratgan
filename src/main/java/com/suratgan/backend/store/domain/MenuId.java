@@ -10,6 +10,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuId {
-    private StoreId storeId;
+    //private StoreId storeId;
     private int menuIdx;
 }
