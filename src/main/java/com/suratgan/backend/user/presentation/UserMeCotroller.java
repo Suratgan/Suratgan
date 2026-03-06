@@ -17,13 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserMeCotroller {
-//    private void logAuth() {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        log.info("[ME] auth={}", auth);
-//        if (auth != null) {
-//            log.info("[ME] principal={}, authorities={}", auth.getPrincipal(), auth.getAuthorities());
-//        }
-//    }
+
     private final UserMeService userMeService;
 
     @GetMapping("/me")
