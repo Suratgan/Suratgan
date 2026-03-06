@@ -2,13 +2,14 @@ package com.suratgan.backend.user.domain;
 
 import com.suratgan.backend.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @Table(name = "users")
 public class User extends BaseEntity {
 
@@ -36,12 +37,13 @@ public class User extends BaseEntity {
         if (role != Role.CUSTOMER && role != Role.OWNER) {
             throw new IllegalArgumentException("가입 가능한 role은 CUSTOMER 또는 OWNER입니다.");
         }
-        User user = new User();
-        user.email = email;
-        user.nickname = nickname;
-        user.password = password;
-        user.role = Role.CUSTOMER;
-        user.isDeleted = false;
-        return user;
+
+        return User.builder()
+                .nickname(nickname)
+                .email(email)
+                .password(password)
+                .role(role)
+                .isDeleted(false)
+                .build();
     }
 }

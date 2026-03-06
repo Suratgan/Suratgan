@@ -46,8 +46,5 @@ public class SignupService {
         );
 
         userRepository.save(user);
-
-//        회원가입 후 이메일 유지할지 말지?
-//        emailVerificationRepository.deleteByEmail(request.getEmail());
     }
 }
