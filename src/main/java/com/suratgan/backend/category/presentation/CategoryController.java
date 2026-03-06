@@ -1,7 +1,8 @@
 package com.suratgan.backend.category.presentation;
 
 import com.suratgan.backend.category.application.CategoryService;
-import com.suratgan.backend.category.presentation.dto.CategoryDto;
+import com.suratgan.backend.category.presentation.dto.CategoryRequestDto;
+import com.suratgan.backend.category.presentation.dto.CategoryResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CategoryController {
 
     @Operation(summary = "카테고리 수정")
     @PatchMapping
-    public ResponseEntity<String> changeCategories(@RequestBody @Valid List<CategoryDto> request) {
+    public ResponseEntity<String> changeCategories(@RequestBody @Valid List<CategoryRequestDto> request) {
         return categoryService.change(request);
     }
 
@@ -38,5 +39,11 @@ public class CategoryController {
     @DeleteMapping
     public ResponseEntity<String> removeCategories(@RequestBody @Valid List<UUID> ids) {
         return categoryService.remove(ids);
+    }
+
+    @Operation(summary = "카테고리 전체 조회")
+    @GetMapping
+    public List<CategoryResponseDto> getAllCategories() {
+        return categoryService.getAllCategories();
     }
 }

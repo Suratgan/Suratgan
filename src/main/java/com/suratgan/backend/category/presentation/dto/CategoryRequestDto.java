@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Getter
-public class CategoryDto {
+public class CategoryRequestDto {
     private UUID id;
 
     @NotBlank

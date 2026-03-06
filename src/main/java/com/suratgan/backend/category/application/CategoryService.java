@@ -1,9 +1,9 @@
 package com.suratgan.backend.category.application;
 
 import com.suratgan.backend.category.domain.Category;
-import com.suratgan.backend.category.domain.CategoryId;
 import com.suratgan.backend.category.domain.CategoryRepository;
-import com.suratgan.backend.category.presentation.dto.CategoryDto;
+import com.suratgan.backend.category.presentation.dto.CategoryRequestDto;
+import com.suratgan.backend.category.presentation.dto.CategoryResponseDto;
 import com.suratgan.backend.global.domain.service.RoleCheck;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -42,20 +42,20 @@ public class CategoryService {
     }
 
     @Transactional
-    public ResponseEntity<String> change(@Valid List<CategoryDto> request) {
+    public ResponseEntity<String> change(@Valid List<CategoryRequestDto> request) {
         if (request == null || request.isEmpty())
             return ResponseEntity.badRequest().body("수정 요청 목록이 비어있습니다.");
 
         // request로 map 생성
         Map<UUID, String> categoryMap = Objects.requireNonNull(request).stream()
-                .collect(Collectors.toMap(CategoryDto::getId, CategoryDto::getCategory));
+                .collect(Collectors.toMap(CategoryRequestDto::getId, CategoryRequestDto::getCategory));
 
-        List<UUID> uuids = request.stream().map(CategoryDto::getId).toList();
+        List<UUID> uuids = request.stream().map(CategoryRequestDto::getId).toList();
         List<Category> categories = getCategories(uuids);
 
-        categories.forEach(category -> {
-            String categoryName = categoryMap.get(category.getId().getId());
-            category.change(categoryName, roleCheck);
+        categories.forEach(c -> {
+            String categoryName = categoryMap.get(c.getId().getId());
+            c.change(categoryName, roleCheck);
         });
 
         return ResponseEntity.ok("카테고리 수정 완료");
@@ -67,7 +67,7 @@ public class CategoryService {
             return ResponseEntity.badRequest().body("삭제 요청 목록이 비어있습니다.");
 
         List<Category> categories = getCategories(ids);
-        categories.forEach(category -> category.remove(roleCheck));
+        categories.forEach(c -> c.remove(roleCheck));
 
         return ResponseEntity.ok("카테고리 삭제 완료");
     }
@@ -79,5 +79,15 @@ public class CategoryService {
             throw new IllegalArgumentException("요청한 카테고리가 존재하지 않습니다.");
 
         return categories;
+    }
+
+    public List<CategoryResponseDto> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
+
+        return categories.stream()
+                .map(c -> CategoryResponseDto.builder()
+                        .id(c.getId().getId())
+                        .category(c.getCategoryName())
+                        .build()).toList();
     }
 }
