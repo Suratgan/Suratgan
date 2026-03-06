@@ -93,4 +93,9 @@ public class Payment {
         this.cancelReason = cancelReason;
         this.canceledAt = canceledAt != null ? canceledAt : LocalDateTime.now();
     }
+
+    public void fail(String message) {
+        this.status = PaymentStatus.FAILED;
+        this.paymentLog = message;
+    }
 }

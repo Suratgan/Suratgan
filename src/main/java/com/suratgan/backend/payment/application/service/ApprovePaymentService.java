@@ -2,9 +2,11 @@ package com.suratgan.backend.payment.application.service;
 
 import com.suratgan.backend.payment.application.dto.ApprovePaymentResult;
 import com.suratgan.backend.payment.domain.Payment;
+import com.suratgan.backend.payment.domain.PaymentApprovedEvent;
 import com.suratgan.backend.payment.domain.PaymentRepository;
 import com.suratgan.backend.payment.infrastructure.api.TossApprovePayment;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ public class ApprovePaymentService implements ApprovePayment {
 
     private final PaymentRepository paymentRepository;
     private final TossApprovePayment tossApprovePayment;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public ApprovePaymentResult approve(String orderIdForToss, String paymentKey, long amount) {
@@ -37,7 +40,23 @@ public class ApprovePaymentService implements ApprovePayment {
         Payment payment = paymentRepository.findByOrderId(orderId)
                 .orElseGet(() -> saveOrGetExisting(orderId, approveAmount));
 
-        payment.approve(paymentKey, approveAmount, null, null);
+        try {
+            TossApprovePayment.TossApproveResponse tossRes =
+                    tossApprovePayment.approve(paymentKey, orderIdForToss, amount);
+
+            payment.approve(
+                    tossRes.getPaymentKey(),
+                    (int) tossRes.getTotalAmount(),
+                    tossRes.toString(),
+                    null
+            );
+
+            eventPublisher.publishEvent(new PaymentApprovedEvent(orderId));
+
+        } catch (Exception e) {
+            payment.fail(e.getMessage());
+            throw e;
+        }
 
         return ApprovePaymentResult.builder()
                 .paymentId(payment.getId())

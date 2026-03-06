@@ -28,14 +28,11 @@ public class CancelPaymentService implements CancelPayment {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new IllegalArgumentException("payment not found: " + paymentId));
 
-        // 1) Toss 취소 호출
         TossCancelPayment.TossCancelResponse tossRes =
                 tossCancelPayment.cancel(payment.getPaymentKey(), cancelReason);
 
-        // 2) canceledAt 파싱 (포맷 불일치 가능성 대비)
         LocalDateTime canceledAt = parseCanceledAtOrNow(tossRes.getCanceledAt());
 
-        // 3) 도메인 반영 (Payment.cancel이 canceledAt 저장하도록 되어 있어야 함)
         payment.cancel(cancelReason, null, canceledAt);
 
         return CancelPaymentResult.builder()
