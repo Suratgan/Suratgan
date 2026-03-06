@@ -43,11 +43,11 @@ public class OrderService {
 
         List<OrderItem> items = request.getItems().stream()
                 .map(i -> {
-                        ProductInfo productInfo = ProductInfo.builder()
-                            .code(i.getProductCode())
-                            .name(i.getProductName())
-                            .price(i.getPrice())
-                            .build();
+                        ProductInfo productInfo = ProductInfo.of(
+                            i.getMenuId(),
+                            "임시메뉴",
+                            10000
+                        );
 
                         return OrderItem.builder()
                             .item(productInfo)

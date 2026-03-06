@@ -24,14 +24,11 @@ public class OrderServiceDto {
         private List<Item> items;
     }
 
-
-
     @Getter
     @NoArgsConstructor
     public static class Item {
-        private String productCode;
-        private String productName;
+
+        private UUID menuId;
         private int quantity;
-        private int price;
     }
 }
