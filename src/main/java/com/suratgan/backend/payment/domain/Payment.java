@@ -15,7 +15,7 @@ import java.util.UUID;
 public class Payment {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "order_id", nullable = false)
@@ -25,28 +25,26 @@ public class Payment {
     private String paymentKey; // 토스에서 보내주는 key값
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 30)
+    @Column(length = 30)
     private PaymentStatus status; // 결제 상태
 
-    @Column(name = "amount")
-    private Integer amount; // 가격
+    private int amount; // 가격
 
     @Column(name = "log", columnDefinition = "jsonb")
     private String paymentLog; //결제 내역
 
-    @Column(name = "method")
+    @Column(length=30)
     private String method; // 결제 수단
 
-    @Column(name = "created_at")
+    @Column(updatable = false)
     private LocalDateTime createdAt; //생성 시간
 
-    @Column(name = "approved_at")
+    @Column(insertable = false)
     private LocalDateTime approvedAt; //승인 시간
 
-    @Column(name = "cancelreason")
     private String cancelReason; //취소 사유
 
-    @Column(name = "canceled_at")
+    @Column(insertable = false)
     private LocalDateTime canceledAt; //취소 시간
 
 
