@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface OrderRepository extends JpaRepository<Order, OrderId> {
 
     // 고객 주문 목록 조회
-    List<Order> findByOrderer_Id(UUID Userid);
+    List<Order> findByOrderer_Id(UUID userid);
 
     // 매장 주문 목록 조회
     List<Order> findByStoreInfoStoreId(UUID storeId);
