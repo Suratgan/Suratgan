@@ -9,10 +9,8 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
-@Table(name = "users")
+@NoArgsConstructor
+@Table(name = "p_users")
 public class User extends BaseEntity {
 
     @Id
