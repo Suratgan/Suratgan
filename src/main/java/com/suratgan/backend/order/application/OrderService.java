@@ -9,7 +9,9 @@ import com.suratgan.backend.order.domain.ProductInfo;
 import com.suratgan.backend.order.domain.StoreInfo;
 import com.suratgan.backend.order.domain.service.OrderCheck;
 import com.suratgan.backend.order.infrastructure.OrderRepository;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,8 +60,19 @@ public class OrderService {
 
         Order order = Order.create(orderer, storeInfo, items, orderCheck);
 
+        order.orderAccept(); // TODO: 테스트용(반드시 삭제)
+
         orderRepository.save(order);
 
         return order.getId();
+    }
+
+    @Transactional
+    public void cancelOrder(UUID orderId) {
+
+        Order order = orderRepository.findById(OrderId.of(orderId))
+            .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다."));
+
+        order.cancel(LocalDateTime.now());
     }
 }

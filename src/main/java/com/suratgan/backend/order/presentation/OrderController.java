@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,5 +53,11 @@ public class OrderController {
     @GetMapping("/stores/{storeId}/orders/{orderId}")
     public OrderResponse getStoreOrder(@PathVariable UUID storeId, @PathVariable UUID orderId) {
         return orderQueryService.getStoreOrder(storeId, orderId);
+    }
+
+    // 주문 취소
+    @PatchMapping("/orders/{orderId}/cancel")
+    public void cancelOrder(@PathVariable UUID orderId) {
+        orderService.cancelOrder(orderId);
     }
 }
