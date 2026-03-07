@@ -1,6 +1,9 @@
 package com.suratgan.backend.review.domain;
 
 import com.suratgan.backend.global.domain.BaseEntity;
+import com.suratgan.backend.global.domain.service.ReviewerCheck;
+import com.suratgan.backend.global.domain.service.RoleCheck;
+import com.suratgan.backend.global.domain.service.UserDetails;
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Embedded;
@@ -8,7 +11,11 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -47,4 +54,52 @@ public class Review extends BaseEntity {
 
     @Embedded
     private ReviewContent content;
+
+    @Builder
+    public Review(UUID orderId, String subject, String content, int score, RoleCheck roleCheck, ReviewerCheck reviewerCheck, UserDetails userDetails) {
+        // 권한 체크
+        checkAuthority(orderId, reviewerCheck, roleCheck);
+
+        // TODO: 작성 가능한 리뷰인지 체크 - 주문 존재 여부 및 상태 확인(ORDER_DONE)
+
+        this.id = ReviewId.of();
+        this.reviewer = new Reviewer(userDetails);
+
+        this.info = ReviewOrderInfo.builder()
+            .orderId(orderId)
+            .build();
+        this.content = new ReviewContent(subject, content, score);
+    }
+
+    // 리뷰 수정
+    public void change(String subject, String content, int score, ReviewerCheck reviewerCheck, RoleCheck roleCheck) {
+        // 권한 체크
+        checkAuthority(info.getOrderId(), reviewerCheck, roleCheck);
+
+        this.content = new ReviewContent(subject, content, score);
+    }
+
+    // 리뷰 삭제(soft delete)
+    public void remove(ReviewerCheck reviewerCheck, RoleCheck roleCheck) {
+        // 권한 체크
+        checkAuthority(info.getOrderId(), reviewerCheck, roleCheck);
+
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    /**
+     * 1. 리뷰 작성시 주문자와 로그인한 사용자가 같은지 체크
+     * 2. 리뷰 수정인 경우 리뷰 작성자가 로그인한 사용자와 같은지도 체크
+     *    (주문번호는 최초 등록시에만 수정이 되므로 수정일땐 체크 불필요)
+     * 3. 관리자(MANAGER, MASTER)는 권한 체크 필요없이 항상 가능
+     */
+    private void checkAuthority(UUID orderId, ReviewerCheck reviewerCheck, RoleCheck roleCheck) {
+        if (roleCheck.hasRole(List.of("MASTER", "MANAGER"))) {
+            return; // 관리자 권한이 있으면 통과
+        }
+
+        if (!reviewerCheck.check(id, orderId)) {
+            throw new IllegalArgumentException("리뷰 작성 권한이 없습니다.");
+        }
+    }
 }
