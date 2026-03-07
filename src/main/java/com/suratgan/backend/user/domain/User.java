@@ -1,9 +1,10 @@
 package com.suratgan.backend.user.domain;
 
 import com.suratgan.backend.global.domain.BaseEntity;
+import com.suratgan.backend.user.application.dto.SignupRequestDto;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.util.UUID;
 
 @Entity
@@ -32,16 +33,16 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public static User create(String nickname, String password, String email, Role role) {
-        if (role != Role.CUSTOMER && role != Role.OWNER) {
+    public static User create(SignupRequestDto request, String encodedPassword) {
+        if (request.getRole() != Role.CUSTOMER && request.getRole() != Role.OWNER) {
             throw new IllegalArgumentException("가입 가능한 role은 CUSTOMER 또는 OWNER입니다.");
         }
-        User user = new User();
-        user.email = email;
-        user.nickname = nickname;
-        user.password = password;
-        user.role = Role.CUSTOMER;
-        user.isDeleted = false;
-        return user;
+        return User.builder()
+                .nickname(request.getNickname())
+                .password(encodedPassword)
+                .email(request.getEmail())
+                .role(request.getRole())
+                .isDeleted(false)
+                .build();
     }
 }
