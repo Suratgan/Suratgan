@@ -39,10 +39,7 @@ public class SignupService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.create(
-                request.getNickname(),
-                encodedPassword,
-                request.getEmail(),
-                request.getRole()
+                request, encodedPassword
         );
 
         userRepository.save(user);
