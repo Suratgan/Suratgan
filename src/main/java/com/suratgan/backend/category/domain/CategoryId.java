@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CategoryId {
-    @Column(length = 45, name="category_id")
+    @Column(length = 45)
     private UUID id;
 
     public static CategoryId of() {

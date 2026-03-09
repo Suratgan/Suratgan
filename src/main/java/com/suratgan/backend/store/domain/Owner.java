@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Owner {
     @Column(nullable = false)
-    private UUID id;
+    private UUID userId;
 
     @Column(length = 20, nullable = false)
     private String role;
@@ -22,7 +22,7 @@ public class Owner {
 
     @Builder
     protected Owner(UUID id, String role, String name) {
-        this.id = id;
+        this.userId = id;
         this.role = role;
         this.name = name;
     }

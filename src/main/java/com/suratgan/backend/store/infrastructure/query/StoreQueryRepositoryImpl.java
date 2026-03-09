@@ -101,7 +101,7 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
         if (resultStore == null) return Optional.empty();
 
         return resultStore.getMenus().stream()
-                .filter(m -> m.getId().getMenuIdx() == menuIdx)
+                .filter(m -> m.getMenuId().getMenuIdx() == menuIdx)
                 .findFirst();
     }
 

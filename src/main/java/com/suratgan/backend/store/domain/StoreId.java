@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class StoreId {
-    @Column(length = 45, name="store_id")
+    @Column(length = 45, name="id")
     private UUID id;
 
     public static StoreId of() {

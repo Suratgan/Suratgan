@@ -19,9 +19,9 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/categories")
+@RequestMapping("/api/v1/categories")
 public class CategoryController {
-    CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @Operation(summary = "카테고리 생성")
     @PostMapping

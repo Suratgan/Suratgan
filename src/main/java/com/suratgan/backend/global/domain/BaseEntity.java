@@ -15,11 +15,13 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
     @CreatedDate
-    @Column(updatable = false)
+    @Column(updatable = false, name = "created_at")
     protected LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     protected LocalDateTime updatedAt;
 
+    @Column(name = "deleted_at")
     protected LocalDateTime deletedAt;
 }

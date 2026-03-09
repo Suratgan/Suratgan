@@ -2,9 +2,7 @@ package com.suratgan.backend.category.domain;
 
 import com.suratgan.backend.global.domain.BaseEntity;
 import com.suratgan.backend.global.domain.service.RoleCheck;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -26,6 +24,7 @@ public class Category extends BaseEntity {
     @EmbeddedId
     private CategoryId id;
 
+    @Column(name = "category_name")
     private String categoryName;
 
     @Builder

@@ -49,13 +49,24 @@ public class Store extends BaseEntity {
     @CollectionTable(name = "P_STORE_MENU", joinColumns = @JoinColumn(name="store_id"))
     @SQLRestriction("deleted_at IS NULL")
     @OrderColumn(name="menu_orders")
+    @AttributeOverrides({
+            @AttributeOverride(name = "menuId.menuIdx", column = @Column(name = "menu_idx")),
+            @AttributeOverride(name = "createdAt", column = @Column(name = "menu_created_at")),
+            @AttributeOverride(name = "updatedAt", column = @Column(name = "menu_updated_at")),
+            @AttributeOverride(name = "deletedAt", column = @Column(name = "menu_deleted_at"))
+    })
     private List<Menu> menus;
 
     // 음식점 - 카테고리 관계
     @ElementCollection(fetch=FetchType.LAZY)
-    @CollectionTable(name="P_STORE_CATEGORY", joinColumns=@JoinColumn(name="store_id"))
+    @CollectionTable(name="P_STORE_CATEGORY", joinColumns = @JoinColumn(name="store_id"))
     @SQLRestriction("deleted_at IS NULL")
     @OrderColumn(name="category_orders")
+    @AttributeOverrides({
+            @AttributeOverride(name = "createdAt", column = @Column(name = "category_created_at")),
+            @AttributeOverride(name = "updatedAt", column = @Column(name = "category_updated_at")),
+            @AttributeOverride(name = "deletedAt", column = @Column(name = "category_deleted_at"))
+    })
     private List<StoreCategory> categories;
 
     // 음식점 생성(카테고리는 생성과 동시에 설정)
@@ -65,7 +76,7 @@ public class Store extends BaseEntity {
 
         if (ownerCheck.getStoreId() != null) {
             // 공통 Exception 로직 정의 후 추가
-            //throw new BadRequestException("이미 보유한 매장이 있습니다.");
+            throw new IllegalArgumentException("이미 보유한 매장이 있습니다.");
         }
 
         this.id = storeId == null ? StoreId.of() : StoreId.of(storeId);
@@ -148,7 +159,7 @@ public class Store extends BaseEntity {
     // 음식 조회
     public Menu getMenu(MenuId menuId) {
         if (menuId == null) return null;
-        return menus.stream().filter(m -> m.getId().equals(menuId)).findFirst().orElse(null);
+        return menus.stream().filter(m -> m.getMenuId().equals(menuId)).findFirst().orElse(null);
     }
 
     // 음식 수정
@@ -157,7 +168,7 @@ public class Store extends BaseEntity {
 
         Menu menu = Optional.ofNullable(getMenu(menuId))
                 .orElseThrow(MenuNotFoundException::new);
-        int idx = menu.getId().getMenuIdx();
+        int idx = menu.getMenuId().getMenuIdx();
 
         menus.set(idx, StoreDto.toMenu(id, idx, dto));
     }
@@ -173,7 +184,7 @@ public class Store extends BaseEntity {
 
         // 삭제되지 않은 음식 중 타겟에 해당하는 음식 삭제
         menus.stream()
-                .filter(m -> m.getDeletedAt() == null && targetIds.contains(m.getId().getMenuIdx()))
+                .filter(m -> m.getDeletedAt() == null && targetIds.contains(m.getMenuId().getMenuIdx()))
                 .forEach(Menu::remove);
     }
 
@@ -188,7 +199,7 @@ public class Store extends BaseEntity {
         // 카테고리 유효성 검사
         if (!dto.getCategoryCheck().exists(categoryIds)) {
             // 공통 Exception 로직 정의 후 추가
-            //throw new InvalidCategoryException("유효하지 않은 카테고리가 포함되어 있습니다.");
+            throw new IllegalArgumentException("유효하지 않은 카테고리가 포함되어 있습니다.");
         }
 
         // 카테고리가 비어있으면 기본 리스트 생성하여 반환
@@ -205,7 +216,7 @@ public class Store extends BaseEntity {
         // 카테고리 유효성 검사
         if (!dto.getCategoryCheck().exists(dto.getCategoryIds())) {
             // 공통 Exception 로직 정의 후 추가
-            //throw new InvalidCategoryException("유효하지 않은 카테고리가 포함되어 있습니다.");
+            throw new IllegalArgumentException("유효하지 않은 카테고리가 포함되어 있습니다.");
         }
 
         // 기존 카테고리 비우고 새로 생성
@@ -240,11 +251,11 @@ public class Store extends BaseEntity {
         if (id == null) {
             if (!roleCheck.hasRole("OWNER")) {
                 // 공통 Exception 로직 정의 후 추가
-                //throw new UnAuthorizedException();
+                throw new IllegalArgumentException();
             }
         } else if (!ownerCheck.isOwner(id.getId())) { // 상점 정보 수정인 경우 매장 소유주 확인
             // 공통 Exception 로직 정의 후 추가
-            //throw new UnAuthorizedException();
+            throw new IllegalArgumentException();
         }
     }
 }
