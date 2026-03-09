@@ -1,7 +1,6 @@
 package com.suratgan.backend.global.infrastructure.security;
 
 import com.suratgan.backend.auth.infrastructure.jwt.JwtTokenProvider;
-import com.suratgan.backend.user.domain.Role;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtAuthenticatioFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -49,7 +48,7 @@ public class JwtAuthenticatioFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            log.debug("JWT invalud: {}", e.getMessage());
+            log.debug("JWT invalid: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);
