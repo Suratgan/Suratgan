@@ -49,7 +49,7 @@ public class JwtAuthenticatioFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            log.debug("JWT invalud: {}", e.getMessage());
+            log.debug("JWT invalid: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);
