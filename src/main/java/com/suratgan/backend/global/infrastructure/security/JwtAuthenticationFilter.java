@@ -1,7 +1,6 @@
 package com.suratgan.backend.global.infrastructure.security;
 
 import com.suratgan.backend.auth.infrastructure.jwt.JwtTokenProvider;
-import com.suratgan.backend.user.domain.Role;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtAuthenticatioFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
