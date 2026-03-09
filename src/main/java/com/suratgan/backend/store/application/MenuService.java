@@ -44,6 +44,8 @@ public class MenuService {
 
         store.createMenu(menuDto);
 
+//        storeRepository.save(store);
+
         return ResponseEntity.ok("메뉴 생성 완료");
     }
 }
