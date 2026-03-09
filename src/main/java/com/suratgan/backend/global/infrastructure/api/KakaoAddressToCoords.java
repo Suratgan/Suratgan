@@ -2,7 +2,6 @@ package com.suratgan.backend.global.infrastructure.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.suratgan.backend.global.domain.service.AddressToCoords;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -12,18 +11,23 @@ import org.springframework.web.client.RestClient;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 class KakaoAddressToCoords implements AddressToCoords {
-    @Value("${kakao.api.key}")
-    private String apiKey;
+    private final RestClient restClient;
+    private final String apiKey;
 
-    private final RestClient restClient = RestClient.builder()
-            .baseUrl("https://dapi.kakao.com")
-            .build();
+    public KakaoAddressToCoords(
+            RestClient.Builder restClientBuilder,
+            @Value("${kakao.api.key}") String apiKey
+    ) {
+        this.restClient = restClientBuilder
+                .baseUrl("https://dapi.kakao.com")
+                .build();
+        this.apiKey = apiKey;
+    }
 
     @Override
     public double[] convert(String address) {
-        //if (!StringUtils.hasText(address)) return null;
+        if (!StringUtils.hasText(address)) return null;
 
         try {
             ResponseEntity<JsonNode> res = restClient.get()

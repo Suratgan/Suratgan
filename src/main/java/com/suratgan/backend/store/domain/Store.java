@@ -47,26 +47,13 @@ public class Store extends BaseEntity {
     // 음식점 - 음식 관계
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "P_STORE_MENU", joinColumns = @JoinColumn(name="store_id"))
-    @SQLRestriction("deleted_at IS NULL")
     @OrderColumn(name="menu_orders")
-    @AttributeOverrides({
-            @AttributeOverride(name = "menuId.menuIdx", column = @Column(name = "menu_idx")),
-            @AttributeOverride(name = "createdAt", column = @Column(name = "menu_created_at")),
-            @AttributeOverride(name = "updatedAt", column = @Column(name = "menu_updated_at")),
-            @AttributeOverride(name = "deletedAt", column = @Column(name = "menu_deleted_at"))
-    })
     private List<Menu> menus;
 
     // 음식점 - 카테고리 관계
     @ElementCollection(fetch=FetchType.LAZY)
     @CollectionTable(name="P_STORE_CATEGORY", joinColumns = @JoinColumn(name="store_id"))
-    @SQLRestriction("deleted_at IS NULL")
     @OrderColumn(name="category_orders")
-    @AttributeOverrides({
-            @AttributeOverride(name = "createdAt", column = @Column(name = "category_created_at")),
-            @AttributeOverride(name = "updatedAt", column = @Column(name = "category_updated_at")),
-            @AttributeOverride(name = "deletedAt", column = @Column(name = "category_deleted_at"))
-    })
     private List<StoreCategory> categories;
 
     // 음식점 생성(카테고리는 생성과 동시에 설정)
@@ -85,7 +72,7 @@ public class Store extends BaseEntity {
         this.rating = 0;
         this.totalRating = 0;
         this.reviewCnt = 0;
-//        this.location = new StoreLocation(address, addressToCoords);
+        this.location = new StoreLocation(address, addressToCoords);
 
         // 카테고리 설정
         createCategory(StoreDto.CategoryDto
@@ -99,7 +86,7 @@ public class Store extends BaseEntity {
 
     // 음식점 수정
     public void changeStore(String ownerName, String storeName, String address, List<UUID> categoryIds, AddressToCoords addressToCoords, RoleCheck roleCheck, OwnerCheck ownerCheck, CategoryCheck categoryCheck) {
-        //checkAuthority(roleCheck, ownerCheck);
+        checkAuthority(roleCheck, ownerCheck);
 
         if (ownerName != null) this.owner = new Owner(ownerCheck.getOwnerId(), ownerCheck.getOwnerRole(), ownerName);
         if (storeName != null) this.storeName = storeName;
@@ -117,7 +104,7 @@ public class Store extends BaseEntity {
 
     // 음식점 삭제(Soft Delete)
     public void remove(RoleCheck roleCheck, OwnerCheck ownerCheck) {
-        //checkAuthority(roleCheck, ownerCheck);
+        checkAuthority(roleCheck, ownerCheck);
 
         deletedAt = LocalDateTime.now();
 
@@ -128,7 +115,7 @@ public class Store extends BaseEntity {
 
         // 카테고리 삭제
         if (categories != null) {
-            categories.forEach(StoreCategory::remove);
+            categories.clear();
         }
     }
 
@@ -156,7 +143,7 @@ public class Store extends BaseEntity {
     // 음식(MENU)
     // 음식 생성
     public void createMenu(StoreDto.MenuDto dto) {
-        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         // 음식이 비어있으면 기본 리스트 생성하여 반환
         menus = Objects.requireNonNullElseGet(menus, ArrayList::new);
@@ -173,7 +160,7 @@ public class Store extends BaseEntity {
 
     // 음식 수정
     public void changeMenu(MenuId menuId, StoreDto.MenuDto dto) {
-        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         Menu menu = Optional.ofNullable(getMenu(menuId))
                 .orElseThrow(MenuNotFoundException::new);
@@ -184,7 +171,7 @@ public class Store extends BaseEntity {
 
     // 음식 삭제
     public void removeMenu(RoleCheck roleCheck, OwnerCheck ownerCheck, List<Integer> menuIds) {
-        //checkAuthority(roleCheck, ownerCheck);
+        checkAuthority(roleCheck, ownerCheck);
 
         if (menus == null || menuIds.isEmpty()) return;
 
@@ -192,15 +179,13 @@ public class Store extends BaseEntity {
         Set<Integer> targetIds = new HashSet<>(menuIds);
 
         // 삭제되지 않은 음식 중 타겟에 해당하는 음식 삭제
-        menus.stream()
-                .filter(m -> m.getDeletedAt() == null && targetIds.contains(m.getMenuId().getMenuIdx()))
-                .forEach(Menu::remove);
+        menus.removeIf(c -> targetIds.contains(c.getMenuId().getMenuIdx()));
     }
 
     // 카테고리(CATEGORY)
     // 카테고리 생성
     public void createCategory(StoreDto.CategoryDto dto) {
-        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         List<UUID> categoryIds = dto.getCategoryIds();
         if (categoryIds == null || categoryIds.isEmpty()) return;
@@ -220,7 +205,7 @@ public class Store extends BaseEntity {
     
     // 카테고리 수정
     public void changeCategory(StoreDto.CategoryDto dto) {
-        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         // 카테고리 유효성 검사
         if (!dto.getCategoryCheck().exists(dto.getCategoryIds())) {
@@ -235,7 +220,7 @@ public class Store extends BaseEntity {
     
     // 카테고리 삭제
     public void removeCategory(StoreDto.CategoryDto dto) {
-        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         if (categories == null || dto.getCategoryIds() == null) return;
 
@@ -243,9 +228,7 @@ public class Store extends BaseEntity {
         Set<UUID> targetIds = new HashSet<>(dto.getCategoryIds());
 
         // 삭제되지 않은 카테고리 중 타겟에 해당하는 카테고리를 해당 음식점 카테고리에서 삭제
-        categories.stream()
-                .filter(c -> c.getDeletedAt() == null && targetIds.contains(c.getCategoryId()))
-                .forEach(StoreCategory::remove);
+        categories.removeIf(c -> targetIds.contains(c.getCategoryId()));
     }
 
     // 권한 체크

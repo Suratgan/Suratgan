@@ -24,13 +24,13 @@ public class StoreController {
     }
 
     @Operation(summary = "음식점 수정")
-    @PatchMapping
+    @PatchMapping("/{storeId}")
     public ResponseEntity<String> changeStore(@PathVariable("storeId") UUID id, @RequestBody @Valid StoreChangeRequestDto request) {
         return storeService.change(id, request);
     }
 
     @Operation(summary = "음식점 삭제")
-    @DeleteMapping
+    @DeleteMapping("/{storeId}")
     public ResponseEntity<String> removeStore(@PathVariable("storeId") UUID id) {
         return storeService.remove(id);
     }

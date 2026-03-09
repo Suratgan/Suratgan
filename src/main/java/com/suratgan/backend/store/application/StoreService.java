@@ -56,6 +56,7 @@ public class StoreService {
                 .storeName(request.getName())
                 .address(request.getAddress())
                 .categoryIds(categoryIds)
+                .addressToCoords(addressToCoords)
                 .roleCheck(roleCheck)
                 .ownerCheck(ownerCheck)
                 .categoryCheck(categoryCheck)

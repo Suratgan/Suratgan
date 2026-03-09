@@ -1,13 +1,9 @@
 package com.suratgan.backend.store.domain;
 
-import com.suratgan.backend.global.domain.BaseEntity;
-import com.suratgan.backend.global.domain.service.RoleCheck;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import lombok.*;
-import org.hibernate.annotations.SQLRestriction;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 0. OWNER는 반드시 본인이 소유한 음식점의 음식만 등록, 수정, 삭제할 수 있다. MANAGER와 MASTER는 모든 음식에 접근이 가능하다.
@@ -21,9 +17,8 @@ import java.util.List;
 @Getter
 @ToString
 //@Table(name = "P_MENU")
-@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Menu extends BaseEntity {
+public class Menu {
     @Embedded
     private MenuId menuId;
 
@@ -54,7 +49,7 @@ public class Menu extends BaseEntity {
 
     // 메뉴 삭제(soft delete)
     public void remove() {
-        deletedAt = LocalDateTime.now();
+        //deletedAt = LocalDateTime.now();
     }
 
     // 숨김 처리 변경
@@ -64,7 +59,7 @@ public class Menu extends BaseEntity {
 
     // 상품 노출 가능 여부
     public boolean isVisible() {
-        return (getDeletedAt() == null) && (!isDeleted);
+        return !isDeleted;
     }
 
     // 음식 설명 문구 변경

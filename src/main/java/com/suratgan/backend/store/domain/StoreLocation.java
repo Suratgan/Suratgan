@@ -22,10 +22,15 @@ public class StoreLocation {
 
     protected StoreLocation(String address, AddressToCoords addressToCoords) {
         this.address = address;
-        //if (!StringUtils.hasText(address)) return;
+        if (!StringUtils.hasText(address)) return;
 
         // 주소를 위도, 경도로 변환
         double[] coords = addressToCoords.convert(address);
+
+        if (coords == null || coords.length < 2) {
+            throw new IllegalArgumentException("주소를 좌표로 변환할 수 없습니다: " + address);
+        }
+
         latitude = coords[0]; longitude = coords[1];
     }
 }
