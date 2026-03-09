@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "email_verification")
+@Table(name = "p_email_verification")
 public class EmailVerification {
 
     @Id
