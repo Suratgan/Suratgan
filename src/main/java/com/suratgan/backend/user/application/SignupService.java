@@ -39,15 +39,9 @@ public class SignupService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.create(
-                request.getNickname(),
-                encodedPassword,
-                request.getEmail(),
-                request.getRole()
+                request, encodedPassword
         );
 
         userRepository.save(user);
-
-//        회원가입 후 이메일 유지할지 말지?
-//        emailVerificationRepository.deleteByEmail(request.getEmail());
     }
 }

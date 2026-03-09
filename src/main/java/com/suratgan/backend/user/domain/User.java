@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "p_user")
+@Table(name = "p_users")
 public class User extends BaseEntity {
 
     @Id
@@ -32,16 +32,16 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public static User create(String nickname, String password, String email, Role role) {
-        if (role != Role.CUSTOMER && role != Role.OWNER) {
+    public static User create(SignupRequestDto request, String encodedPassword) {
+        if (request.getRole() != Role.CUSTOMER && request.getRole() != Role.OWNER) {
             throw new IllegalArgumentException("가입 가능한 role은 CUSTOMER 또는 OWNER입니다.");
         }
-        User user = new User();
-        user.email = email;
-        user.nickname = nickname;
-        user.password = password;
-        user.role = Role.CUSTOMER;
-        user.isDeleted = false;
-        return user;
+        return User.builder()
+                .nickname(request.getNickname())
+                .password(encodedPassword)
+                .email(request.getEmail())
+                .role(request.getRole())
+                .isDeleted(false)
+                .build();
     }
 }

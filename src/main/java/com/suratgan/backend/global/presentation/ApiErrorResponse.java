@@ -26,4 +26,15 @@ public class ApiErrorResponse {
         private final String field;
         private final String reason;
     }
+
+    public static ApiErrorResponse of(String error, String message) {
+        return ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(400)
+                .error(error)
+                .code(error)
+                .message(message)
+                .path(null)
+                .build();
+    }
 }
