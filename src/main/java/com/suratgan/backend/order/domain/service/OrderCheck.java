@@ -1,0 +1,18 @@
+package com.suratgan.backend.order.domain.service;
+
+import com.suratgan.backend.order.domain.OrderItem;
+import java.util.List;
+import java.util.UUID;
+
+public interface OrderCheck {
+    /**
+     * 주문 가능 여부 체크
+     *  1. 매장의 영업 여부 체크: Store::isVisible()
+     *  2. 매장의 주문 가능 시간 체크: Store::isOrderable()
+     *  3. 상품의 주문 가능 여부 체크: Product::isOrderable()
+     *
+     * @param items 주문 상품 목록
+     * @return
+     */
+    boolean isOrderable(UUID storeId, List<OrderItem> items);   // 주문 가능 여부 체크
+}
