@@ -25,7 +25,7 @@ public class CategoryController {
 
     @Operation(summary = "카테고리 생성")
     @PostMapping
-    public ResponseEntity<String> createCategories(@RequestBody @Valid List<String> categories) {
+    public ResponseEntity<String> createCategories(@RequestHeader("Authorization") String token, @RequestBody @Valid List<String> categories) {
         return categoryService.create(categories);
     }
 
