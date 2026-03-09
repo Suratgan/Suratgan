@@ -19,13 +19,4 @@ public class UserMeResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
-
-//    public static UserMeResponseDto from(User user) {
-//        return UserMeResponseDto.builder()
-//                .id(user.getId())
-//                .nickname(user.getNickname())
-//                .email(user.getEmail())
-//                .role(user.getRole())
-//                .build();
-//    }
 }

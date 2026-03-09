@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -21,8 +22,7 @@ public class JwtTokenProvider {
     private final long accessTokenMillis;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secret,
-                            @Value("${jwt.access-token-exp-minutes}") long expMinutes)
-    {
+                            @Value("${jwt.access-token-exp-minutes}") long expMinutes) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.accessTokenMillis = expMinutes * 60 * 1000L;
     }
@@ -42,6 +42,26 @@ public class JwtTokenProvider {
 
     public long getAccessTokenExpiration() {
         return accessTokenMillis;
+    }
+
+    public boolean validate(String token) {
+        try {
+            parseClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public UUID getUserID(String token) {
+        Claims claims = parseClaims(token);
+        return UUID.fromString(claims.getSubject());
+    }
+
+    public Role getRole(String token) {
+        Claims claims = parseClaims(token);
+        String role = claims.get("role", String.class);
+        return Role.valueOf(role);
     }
 
     public Claims parseClaims(String token) {
