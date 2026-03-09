@@ -84,6 +84,7 @@ public class UserMeService {
 
     @Transactional
     public UserPasswordUpdateResponseDto changePassword(UserPasswordUpdateRequestDto request) {
+
         UUID userId = SecurityUtils.currentUserId();
 
         User user = userRepository.findById(userId)
