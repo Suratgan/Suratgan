@@ -26,6 +26,10 @@ toss:
     secret-key: ${TOSS_SECRET_KEY}
     base-url: https://api.tosspayments.com
 
+kakao:
+  api:
+    key: ${KAKAO_API_KEY}
+
 # 로그 설정
 logging:
   level:

@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -44,11 +46,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-            var authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
+            UserDetails userDetails = User.builder()
+                    .username(userId)
+                    .password("")
+                    .authorities(authorities)
+                    .build();
+
+            var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            log.debug("JWT invalid: {}", e.getMessage());
+            log.debug("JWT invalud: {}", e.getMessage());
+
+            // 유효하지 않은 토큰일 경우 컨텍스트를 비움
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
