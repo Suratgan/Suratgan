@@ -27,7 +27,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/users/signup").permitAll()
                         .requestMatchers("/api/v1/email/**").permitAll()
+                        .requestMatchers("/api/v1/orders").permitAll()
                         .requestMatchers("/error").permitAll()
+                        // swagger 허용
+                        .requestMatchers(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())

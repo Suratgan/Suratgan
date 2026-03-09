@@ -20,7 +20,7 @@ import lombok.ToString;
 public class ProductInfo {
 
     @Column(name = "menu_id", nullable = false)
-    private UUID menuId;
+    private int menuId;
 
     @Column(name = "menu_name", nullable = false)
     private String name;
@@ -29,7 +29,7 @@ public class ProductInfo {
     @AttributeOverride(name = "value", column = @Column(name = "menu_price"))
     private Price price;
 
-    public static ProductInfo of(UUID menuId, String name, int price) {
+    public static ProductInfo of(int menuId, String name, int price) {
         return new ProductInfo(menuId, name, new Price(price));
     }
 }

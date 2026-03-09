@@ -24,10 +24,10 @@ public class StoreInfo {
     @Column(nullable = false)
     private String storeAddress;
 
-    @Column(nullable = false)
-    private String storeTel;
+//    @Column(nullable = false)
+//    private String storeTel;
 
-    public static StoreInfo of(UUID storeId, String storeName, String storeAddress, String storeTel) {
-        return new StoreInfo(storeId, storeName, storeAddress, storeTel);
+    public static StoreInfo of(UUID storeId, String storeName, String storeAddress) {
+        return new StoreInfo(storeId, storeName, storeAddress);
     }
 }

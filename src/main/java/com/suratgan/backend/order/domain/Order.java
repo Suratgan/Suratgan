@@ -90,7 +90,7 @@ public class Order extends BaseEntity {
             StringUtils.hasText(ordererMobile) ? ordererMobile : userDetails.getMobile(),
             StringUtils.hasText(ordererEmail) ? ordererEmail : userDetails.getEmail()
         );
-        this.storeInfo = new StoreInfo(storeId, storeName, storeAddress, storeTel);
+        this.storeInfo = new StoreInfo(storeId, storeName, storeAddress);
         this.status = OrderStatus.ORDER_CREATING; // 주문 생성 중
         setOrderItems(orderItems, orderCheck);
     }

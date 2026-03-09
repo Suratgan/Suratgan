@@ -1,93 +1,102 @@
-//package com.suratgan.backend.order.application;
-//
-//import com.suratgan.backend.global.domain.service.OwnerCheck;
-//import com.suratgan.backend.global.domain.service.RoleCheck;
-//import com.suratgan.backend.global.domain.service.UserDetails;
-//import com.suratgan.backend.order.application.dto.OrderServiceDto;
-//import com.suratgan.backend.order.domain.Order;
-//import com.suratgan.backend.order.domain.OrderId;
-//import com.suratgan.backend.order.domain.OrderItem;
-//import com.suratgan.backend.order.domain.Orderer;
-//import com.suratgan.backend.order.domain.ProductInfo;
-//import com.suratgan.backend.order.domain.StoreInfo;
-//import com.suratgan.backend.order.domain.service.OrderCheck;
-//import com.suratgan.backend.order.infrastructure.OrderRepository;
-//import java.time.LocalDateTime;
-//import java.util.List;
-//import java.util.NoSuchElementException;
-//import java.util.UUID;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//@Service
-//@RequiredArgsConstructor
-//public class OrderService {
-//
-//    private final OrderRepository orderRepository;
-//    private final OrderCheck orderCheck;
-//    private final RoleCheck roleCheck;
-//    private final OwnerCheck ownerCheck;
-//
-//    @Transactional
-//    public OrderId createOrder(OrderServiceDto.Create request, UserDetails userDetails) {
-//
-//        UUID memberId = UUID.randomUUID(); // TODO: 회원 ID는 인증된 사용자로부터 가져와야 합니다.(테스트용)
-//
-//        Orderer orderer = Orderer.of(
-//            memberId,
-//            request.getOrdererName(),
-//            request.getOrdererMobile(),
-//            request.getOrdererEmail()
-//        );
-//
-//        StoreInfo storeInfo = StoreInfo.of(
-//            request.getStoreId(),
-//            request.getStoreName(),
-//            request.getStoreAddress(),
-//            request.getStoreTel()
-//        );
-//
-//        List<OrderItem> items = request.getItems().stream()
-//                .map(i -> {
-//                        ProductInfo productInfo = ProductInfo.of(
-//                            i.getMenuId(),
-//                            "임시메뉴",
-//                            10000
-//                        );
-//
-//                        return OrderItem.builder()
-//                            .item(productInfo)
-//                            .quantity(i.getQuantity())
-//                            .build();
-//                })
-//                .toList();
-//
-//        Order order = Order.builder()
-//            .orderId(null)
-//            .ordererName(request.getOrdererName())
-//            .ordererMobile(request.getOrdererMobile())
-//            .ordererEmail(request.getOrdererEmail())
-//            .storeId(request.getStoreId())
-//            .storeName(request.getStoreName())
-//            .storeAddress(request.getStoreAddress())
-//            .storeTel(request.getStoreTel())
-//            .orderItems(items)
-//            .orderCheck(orderCheck)
-//            .userDetails(userDetails)
-//            .build();
-//
-//        orderRepository.save(order);
-//
-//        return order.getId();
-//    }
-//
-//    @Transactional
-//    public void cancelOrder(UUID orderId) {
-//
-//        Order order = orderRepository.findById(OrderId.of(orderId))
-//            .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다."));
-//
-//        order.cancel(roleCheck, ownerCheck, orderCheck);
-//    }
-//}
+package com.suratgan.backend.order.application;
+
+import com.suratgan.backend.global.domain.service.OwnerCheck;
+import com.suratgan.backend.global.domain.service.RoleCheck;
+import com.suratgan.backend.global.domain.service.UserDetails;
+import com.suratgan.backend.order.application.dto.OrderServiceDto;
+import com.suratgan.backend.order.domain.Order;
+import com.suratgan.backend.order.domain.OrderId;
+import com.suratgan.backend.order.domain.OrderItem;
+import com.suratgan.backend.order.domain.Orderer;
+import com.suratgan.backend.order.domain.ProductInfo;
+import com.suratgan.backend.order.domain.StoreInfo;
+import com.suratgan.backend.order.domain.service.OrderCheck;
+import com.suratgan.backend.order.infrastructure.OrderRepository;
+import com.suratgan.backend.store.domain.Menu;
+import com.suratgan.backend.store.domain.MenuId;
+import com.suratgan.backend.store.domain.Store;
+import com.suratgan.backend.store.domain.StoreId;
+import com.suratgan.backend.store.domain.StoreRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+    private final OrderCheck orderCheck;
+    private final RoleCheck roleCheck;
+    private final OwnerCheck ownerCheck;
+    private final StoreRepository storeRepository;
+
+    @Transactional
+    public OrderId createOrder(OrderServiceDto.Create request, UserDetails userDetails) {
+
+        // 1. 가게 정보 조회
+        Store store = storeRepository
+            .findById(StoreId.of(request.getStoreId()))
+            .orElseThrow(() -> new NoSuchElementException("가게를 찾을 수 없습니다."));
+
+        StoreInfo storeInfo = StoreInfo.of(
+            store.getId().getId(),
+            store.getStoreName(),
+            store.getLocation().getAddress()
+        );
+
+        // 2. 주문 아이템 생성
+        List<OrderItem> items = request.getItems().stream()
+            .map(i -> {
+
+                Menu menu = store.getMenu(MenuId.of(i.getMenuId()));
+
+                if (menu == null) {
+                    throw new NoSuchElementException("메뉴를 찾을 수 없습니다.");
+                }
+
+                ProductInfo productInfo = ProductInfo.of(
+                    i.getMenuId(),
+                    menu.getName(),
+                    menu.getPrice()
+                );
+
+                return OrderItem.builder()
+                    .item(productInfo)
+                    .quantity(i.getQuantity())
+                    .build();
+            })
+            .toList();
+
+        // 3. 주문 생성
+        Order order = Order.builder()
+            .orderId(null)
+            .ordererName(request.getOrdererName())
+            .ordererMobile(request.getOrdererMobile())
+            .ordererEmail(request.getOrdererEmail())
+            .storeId(storeInfo.getStoreId())
+            .storeName(storeInfo.getStoreName())
+            .storeAddress(storeInfo.getStoreAddress())
+            .orderItems(items)
+            .orderCheck(orderCheck)
+            .userDetails(userDetails)
+            .build();
+
+        orderRepository.save(order);
+
+        return order.getId();
+    }
+
+    @Transactional
+    public void cancelOrder(UUID orderId) {
+
+        Order order = orderRepository.findById(OrderId.of(orderId))
+            .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다."));
+
+        order.cancel(roleCheck, ownerCheck, orderCheck);
+    }
+}
