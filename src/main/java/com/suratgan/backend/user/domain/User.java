@@ -1,15 +1,20 @@
 package com.suratgan.backend.user.domain;
 
 import com.suratgan.backend.global.domain.BaseEntity;
+import com.suratgan.backend.global.exception.BusinessException;
+import com.suratgan.backend.global.exception.ErrorCode;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@Table(name = "p_user")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@Table(name = "p_users")
 public class User extends BaseEntity {
 
     @Id
@@ -36,12 +41,36 @@ public class User extends BaseEntity {
         if (role != Role.CUSTOMER && role != Role.OWNER) {
             throw new IllegalArgumentException("가입 가능한 role은 CUSTOMER 또는 OWNER입니다.");
         }
-        User user = new User();
-        user.email = email;
-        user.nickname = nickname;
-        user.password = password;
-        user.role = Role.CUSTOMER;
-        user.isDeleted = false;
-        return user;
+        return User.builder()
+                .nickname(nickname)
+                .email(email)
+                .password(password)
+                .role(role)
+                .isDeleted(false)
+                .build();
+    }
+
+    public void changeNickname(String newNickname) {
+        if (this.isDeleted) throw new IllegalStateException("탈퇴한 사용자입니다.");
+        if (newNickname == null || newNickname.isBlank()) {
+            throw new IllegalArgumentException("닉네임은 비어있을 수 없습니다.");
+        }
+        this.nickname = newNickname;
+    }
+
+    public void softDelete() {
+        if (this.isDeleted) return;
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void changePassword(String encodedNewPassword) {
+        if (this.isDeleted) {
+            throw new BusinessException(ErrorCode.USER_DELETED);
+        }
+        if (encodedNewPassword == null || encodedNewPassword.isBlank()) {
+            throw new BusinessException(ErrorCode.PASSWORD_NOT_NULL);
+        }
+        this.password = encodedNewPassword;
     }
 }
