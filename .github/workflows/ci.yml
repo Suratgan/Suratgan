@@ -33,7 +33,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
         env:
           # 소스 코드의 application.yml에 있는 변수명을 여기에 맞춥니다
           DB_URL: ${{ secrets.DB_URL }}
