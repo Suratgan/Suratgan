@@ -85,7 +85,7 @@ public class Store extends BaseEntity {
         this.rating = 0;
         this.totalRating = 0;
         this.reviewCnt = 0;
-        this.location = new StoreLocation(address, addressToCoords);
+//        this.location = new StoreLocation(address, addressToCoords);
 
         // 카테고리 설정
         createCategory(StoreDto.CategoryDto
@@ -98,17 +98,26 @@ public class Store extends BaseEntity {
     }
 
     // 음식점 수정
-    public void changeStore(String ownerName, String storeName, String address, AddressToCoords addressToCoords, RoleCheck roleCheck, OwnerCheck ownerCheck) {
-        checkAuthority(roleCheck, ownerCheck);
+    public void changeStore(String ownerName, String storeName, String address, List<UUID> categoryIds, AddressToCoords addressToCoords, RoleCheck roleCheck, OwnerCheck ownerCheck, CategoryCheck categoryCheck) {
+        //checkAuthority(roleCheck, ownerCheck);
 
-        this.owner = new Owner(ownerCheck.getOwnerId(), ownerCheck.getOwnerRole(), ownerName);
-        this.storeName = storeName;
-        this.location = new StoreLocation(address, addressToCoords);
+        if (ownerName != null) this.owner = new Owner(ownerCheck.getOwnerId(), ownerCheck.getOwnerRole(), ownerName);
+        if (storeName != null) this.storeName = storeName;
+        if (address != null) this.location = new StoreLocation(address, addressToCoords);
+
+        // 카테고리 수정
+        changeCategory(StoreDto.CategoryDto
+                .builder()
+                .roleCheck(roleCheck)
+                .ownerCheck(ownerCheck)
+                .categoryCheck(categoryCheck)
+                .categoryIds(categoryIds)
+                .build());
     }
 
     // 음식점 삭제(Soft Delete)
     public void remove(RoleCheck roleCheck, OwnerCheck ownerCheck) {
-        checkAuthority(roleCheck, ownerCheck);
+        //checkAuthority(roleCheck, ownerCheck);
 
         deletedAt = LocalDateTime.now();
 
@@ -147,7 +156,7 @@ public class Store extends BaseEntity {
     // 음식(MENU)
     // 음식 생성
     public void createMenu(StoreDto.MenuDto dto) {
-        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         // 음식이 비어있으면 기본 리스트 생성하여 반환
         menus = Objects.requireNonNullElseGet(menus, ArrayList::new);
@@ -164,7 +173,7 @@ public class Store extends BaseEntity {
 
     // 음식 수정
     public void changeMenu(MenuId menuId, StoreDto.MenuDto dto) {
-        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         Menu menu = Optional.ofNullable(getMenu(menuId))
                 .orElseThrow(MenuNotFoundException::new);
@@ -175,7 +184,7 @@ public class Store extends BaseEntity {
 
     // 음식 삭제
     public void removeMenu(RoleCheck roleCheck, OwnerCheck ownerCheck, List<Integer> menuIds) {
-        checkAuthority(roleCheck, ownerCheck);
+        //checkAuthority(roleCheck, ownerCheck);
 
         if (menus == null || menuIds.isEmpty()) return;
 
@@ -191,7 +200,7 @@ public class Store extends BaseEntity {
     // 카테고리(CATEGORY)
     // 카테고리 생성
     public void createCategory(StoreDto.CategoryDto dto) {
-        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         List<UUID> categoryIds = dto.getCategoryIds();
         if (categoryIds == null || categoryIds.isEmpty()) return;
@@ -211,7 +220,7 @@ public class Store extends BaseEntity {
     
     // 카테고리 수정
     public void changeCategory(StoreDto.CategoryDto dto) {
-        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         // 카테고리 유효성 검사
         if (!dto.getCategoryCheck().exists(dto.getCategoryIds())) {
@@ -226,7 +235,7 @@ public class Store extends BaseEntity {
     
     // 카테고리 삭제
     public void removeCategory(StoreDto.CategoryDto dto) {
-        checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
+        //checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
         if (categories == null || dto.getCategoryIds() == null) return;
 
@@ -243,7 +252,7 @@ public class Store extends BaseEntity {
     public void checkAuthority(RoleCheck roleCheck, OwnerCheck ownerCheck) {
 
         // 관리자 권한인 경우 통과
-        if (roleCheck.hasRole(List.of("MANAGER", "MASTER"))) {
+        if (roleCheck.hasRole(List.of("OWNER", "MANAGER", "MASTER"))) {
             return;
         }
 

@@ -22,7 +22,7 @@ public class StoreLocation {
 
     protected StoreLocation(String address, AddressToCoords addressToCoords) {
         this.address = address;
-        if (!StringUtils.hasText(address)) return;
+        //if (!StringUtils.hasText(address)) return;
 
         // 주소를 위도, 경도로 변환
         double[] coords = addressToCoords.convert(address);

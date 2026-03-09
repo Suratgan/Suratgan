@@ -1,13 +1,15 @@
 package com.suratgan.backend.user.domain;
 
 import com.suratgan.backend.global.domain.BaseEntity;
+import com.suratgan.backend.user.application.dto.SignupRequestDto;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import java.util.UUID;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "p_users")
 public class User extends BaseEntity {
