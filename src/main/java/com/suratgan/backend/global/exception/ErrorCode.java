@@ -17,7 +17,14 @@ public enum ErrorCode {
     // 이메일 인증
     VERIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "VERIFICATION_NOT_FOUND", "인증 요청이 없습니다."),
     VERIFICATION_CODE_MISMATCH(HttpStatus.BAD_REQUEST, "VERIFICATION_CODE_MISMATCH", "인증코드가 일치하지 않습니다."),
-    VERIFICATION_EXPIRED(HttpStatus.BAD_REQUEST, "VERIFICATION_EXPIRED", "인증 시간이 만료되었습니다.");
+    VERIFICATION_EXPIRED(HttpStatus.BAD_REQUEST, "VERIFICATION_EXPIRED", "인증 시간이 만료되었습니다."),
+
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
+    USER_DELETED(HttpStatus.UNAUTHORIZED, "USER_DELETED", "탈퇴한 사용자입니다."),
+
+    PASSWORD_NOT_NULL(HttpStatus.BAD_REQUEST, "PASSWORD_NOT_NULL", "비밀번호는 비어있을 수 없습니다."),
+    INVALID_CURRENT_PASSWORD(HttpStatus.BAD_REQUEST, "INVALID_CURRENT_PASSWORD", "현재 비밀번호가 올바르지 않습니다."),
+    SAME_AS_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "SAME_AS_OLD_PASSWORD", "새 비밀번호는 현재 비밀번호와 달라야 합니다.");
 
     private final HttpStatus status;
     private final String code;
