@@ -20,6 +20,7 @@ public class SignupService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationRepository emailVerificationRepository;
+
     public void signup(SignupRequestDto request) {
 
         if (userRepository.existsByNickname(request.getNickname())) {
@@ -32,14 +33,14 @@ public class SignupService {
 
         boolean verified = emailVerificationRepository.existsByEmailAndVerifiedTrue(request.getEmail());
 
-        if(!verified) {
+        if (!verified) {
             throw new BusinessException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.create(
-                request, encodedPassword
+                request.getNickname(), encodedPassword, request.getEmail(), request.getRole()
         );
 
         userRepository.save(user);
