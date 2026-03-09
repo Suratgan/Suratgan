@@ -41,7 +41,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Publish container image
         run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
@@ -70,6 +70,8 @@ jobs:
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e DB_DDL_AUTO=update \
+            -e TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }} \
+            -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
             -e KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }} \
             -e KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }} \
             -e KEYCLOAK_ADMIN_USERNAME=${{ secrets.KEYCLOAK_ADMIN_USERNAME }} \
