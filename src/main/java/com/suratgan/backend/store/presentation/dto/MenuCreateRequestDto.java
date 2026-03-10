@@ -23,4 +23,6 @@ public class MenuCreateRequestDto {
     private int price;
 
     private String menuImg;
+
+    private boolean aiGenerated;
 }
