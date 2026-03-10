@@ -2,8 +2,8 @@ package com.suratgan.backend.order.domain;
 
 public enum OrderStatus {
     ORDER_CREATING,     // 주문 생성 중
-    ORDER_ACCEPT,       // 주문 접수
     PAYMENT_CONFIRM,    // 입금 확인
+    ORDER_ACCEPT,       // 주문 접수
     PREPARING,          // 배달 준비 중
     DELIVERY,           // 배달 중
     DELIVERY_DONE,      // 배달 완료
@@ -26,8 +26,7 @@ public enum OrderStatus {
         return switch (this) {
 
             case ORDER_CREATING -> target == ORDER_ACCEPT || target == ORDER_CANCEL;
-            case ORDER_ACCEPT -> target == PAYMENT_CONFIRM || target == ORDER_CANCEL;
-            case PAYMENT_CONFIRM -> target == PREPARING || target == ORDER_REFUND;
+            case ORDER_ACCEPT -> target == PREPARING || target == ORDER_CANCEL;
             case PREPARING -> target == DELIVERY;
             case DELIVERY -> target == DELIVERY_DONE;
             case DELIVERY_DONE -> target == ORDER_DONE;
