@@ -1,5 +1,6 @@
 package com.suratgan.backend.global.infrastructure.security;
 
+import com.suratgan.backend.auth.domain.TokenBlacklistRepository;
 import com.suratgan.backend.auth.infrastructure.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -24,6 +25,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -37,6 +39,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+
+        if(tokenBlacklistRepository.isBlacklisted(token)) {
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그아웃된 토큰입니다.");
+            return;
+        }
 
         try {
             Claims claims = jwtTokenProvider.parseClaims(token);
