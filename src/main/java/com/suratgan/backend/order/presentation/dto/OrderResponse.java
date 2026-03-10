@@ -11,7 +11,7 @@ public record OrderResponse(
     String ordererEmail,
     String storeName,
     String storeAddress,
-    String storeTel,
+//    String storeTel,
     int totalAmount,
     List<OrderItemResponse> items
 ) {}

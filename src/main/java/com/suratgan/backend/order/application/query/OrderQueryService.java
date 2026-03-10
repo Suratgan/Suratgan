@@ -68,7 +68,6 @@ public class OrderQueryService {
             order.getOrderer().getEmail(),
             order.getStoreInfo().getStoreName(),
             order.getStoreInfo().getStoreAddress(),
-            order.getStoreInfo().getStoreTel(),
             order.getTotalOrderPrice().getValue(),
             items
         );
@@ -118,7 +117,7 @@ public class OrderQueryService {
             order.getOrderer().getEmail(),
             order.getStoreInfo().getStoreName(),
             order.getStoreInfo().getStoreAddress(),
-            order.getStoreInfo().getStoreTel(),
+//            order.getStoreInfo().getStoreTel(),
             order.getTotalOrderPrice().getValue(),
             items
         );

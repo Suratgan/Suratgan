@@ -4,6 +4,7 @@ import com.suratgan.backend.category.application.CategoryService;
 import com.suratgan.backend.category.presentation.dto.CategoryRequestDto;
 import com.suratgan.backend.category.presentation.dto.CategoryResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +24,10 @@ import java.util.UUID;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "카테고리 생성")
     @PostMapping
-    public ResponseEntity<String> createCategories(@RequestHeader("Authorization") String token, @RequestBody @Valid List<String> categories) {
+    public ResponseEntity<String> createCategories(@RequestBody @Valid List<String> categories) {
         return categoryService.create(categories);
     }
 
@@ -41,6 +43,7 @@ public class CategoryController {
         return categoryService.remove(ids);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "카테고리 전체 조회")
     @GetMapping
     public List<CategoryResponseDto> getAllCategories() {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 
 @Slf4j
@@ -89,15 +90,21 @@ public class GlobalExceptionHandler {
     }
     // 그 외 예외
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleUnknown(Exception e, HttpServletRequest req) {
+    public ResponseEntity<ApiErrorResponse> handleUnknown(Exception e, HttpServletRequest req) throws Exception {
+
+        if (e instanceof NoResourceFoundException) {
+            throw e; // Swagger 같은 내부 처리로 넘김
+        }
+
         ApiErrorResponse body = ApiErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(500)
-                .error("INTERNAL_SERVER_ERROR")
-                .code("INTERNAL_ERROR")
-                .message("서버 오류가 발생했습니다.")
-                .path(req.getRequestURI())
-                .build();
+            .timestamp(LocalDateTime.now())
+            .status(500)
+            .error("INTERNAL_SERVER_ERROR")
+            .code("INTERNAL_ERROR")
+            .message("서버 오류가 발생했습니다.")
+            .path(req.getRequestURI())
+            .build();
+
         log.error("HTTP ERROR: {}", e.getMessage(), e);
         return ResponseEntity.status(500).body(body);
     }
