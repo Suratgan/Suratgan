@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>회원가입</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <script src="./js/config.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/signup.js" defer></script>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h2>회원가입</h2>
+    <input id="nickname" type="text" placeholder="nickname" />
+    <input id="password" type="password" placeholder="password" />
+    <input id="email" type="email" placeholder="email" />
+    <select id="role">
+      <option value="CUSTOMER">CUSTOMER</option>
+      <option value="OWNER">OWNER</option>
+    </select>
+    <button onclick="signup()">회원가입</button>
+  </div>
+
+  <div class="card">
+    <h3>결과</h3>
+    <pre id="result"></pre>
+    <a href="./login.html">로그인으로 이동</a>
+  </div>
+</div>
+</body>
+</html>

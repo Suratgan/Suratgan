@@ -1,0 +1,142 @@
+function setText(id, data) {
+  document.getElementById(id).textContent =
+      typeof data === "string" ? data : JSON.stringify(data, null, 2);
+}
+
+async function loadMe() {
+  try {
+    const me = await apiRequest(CONFIG.ENDPOINTS.me, "GET", null, true);
+    if (me.id) setUserId(me.id);
+    setText("meResult", me);
+  } catch (e) {
+    setText("meResult", e.message);
+  }
+}
+
+async function logout() {
+  try {
+    const result = await apiRequest(CONFIG.ENDPOINTS.logout, "POST", null, true);
+    removeToken();
+    localStorage.removeItem("userId");
+    setText("meResult", result);
+    alert("로그아웃 완료");
+  } catch (e) {
+    setText("meResult", e.message);
+  }
+}
+
+async function loadCategories() {
+  try {
+    const result = await apiRequest(CONFIG.ENDPOINTS.categories, "GET", null, true);
+    setText("categoryResult", result);
+  } catch (e) {
+    setText("categoryResult", e.message);
+  }
+}
+
+async function loadStores() {
+  try {
+    const categoryId = document.getElementById("categoryIdForStore").value.trim();
+    const result = await apiRequest(CONFIG.ENDPOINTS.storesByCategory(categoryId), "GET", null, true);
+    setText("storeMenuResult", result);
+  } catch (e) {
+    setText("storeMenuResult", `스토어 조회 실패: ${e.message}`);
+  }
+}
+
+async function loadMenus() {
+  try {
+    const storeId = document.getElementById("storeIdForMenu").value.trim();
+    const result = await apiRequest(CONFIG.ENDPOINTS.menusByStore(storeId), "GET", null, true);
+    setText("storeMenuResult", result);
+  } catch (e) {
+    setText("storeMenuResult", `메뉴 조회 실패: ${e.message}`);
+  }
+}
+
+async function createOrder() {
+  try {
+    const raw = document.getElementById("orderJson").value;
+    const body = JSON.parse(raw);
+
+    const result = await apiRequest(CONFIG.ENDPOINTS.createOrder, "POST", body, true);
+    setText("orderCreateResult", result);
+    alert("주문 생성 요청 완료");
+  } catch (e) {
+    setText("orderCreateResult", e.message);
+  }
+}
+
+async function loadMyOrders() {
+  try {
+    let userId = getUserId();
+    if (!userId) {
+      const me = await apiRequest(CONFIG.ENDPOINTS.me, "GET", null, true);
+      if (!me.id) throw new Error("users/me 응답에서 id를 찾지 못했습니다.");
+      userId = me.id;
+      setUserId(userId);
+    }
+
+    const result = await apiRequest(CONFIG.ENDPOINTS.myOrders(userId), "GET", null, true);
+    setText("myOrdersResult", result);
+  } catch (e) {
+    setText("myOrdersResult", e.message);
+  }
+}
+
+async function loadMyOrderDetail() {
+  try {
+    let userId = getUserId();
+    if (!userId) {
+      const me = await apiRequest(CONFIG.ENDPOINTS.me, "GET", null, true);
+      if (!me.id) throw new Error("users/me 응답에서 id를 찾지 못했습니다.");
+      userId = me.id;
+      setUserId(userId);
+    }
+
+    const orderId = document.getElementById("orderIdDetail").value.trim();
+    const result = await apiRequest(CONFIG.ENDPOINTS.myOrderDetail(userId, orderId), "GET", null, true);
+    setText("myOrderDetailResult", result);
+  } catch (e) {
+    setText("myOrderDetailResult", e.message);
+  }
+}
+
+async function updateOrderStatus() {
+  try {
+    const orderId = document.getElementById("statusOrderId").value.trim();
+    const action = document.getElementById("orderAction").value;
+
+    const result = await apiRequest(
+        CONFIG.ENDPOINTS.updateOrderStatus(orderId, action),
+        "PATCH",
+        null,
+        true
+    );
+
+    setText("orderStatusResult", result || "상태 변경 완료");
+  } catch (e) {
+    setText("orderStatusResult", e.message);
+  }
+}
+
+async function createReview() {
+  try {
+    const orderId = document.getElementById("reviewOrderId").value.trim();
+    const subject = document.getElementById("reviewSubject").value.trim();
+    const content = document.getElementById("reviewContent").value.trim();
+    const score = Number(document.getElementById("reviewScore").value);
+
+    const result = await apiRequest(
+        CONFIG.ENDPOINTS.createReview,
+        "POST",
+        { orderId, subject, content, score },
+        true
+    );
+
+    setText("reviewResult", result);
+    alert("리뷰 작성 완료");
+  } catch (e) {
+    setText("reviewResult", e.message);
+  }
+}

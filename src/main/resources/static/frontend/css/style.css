@@ -1,0 +1,50 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 24px;
+  background: #f8f9fb;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+input, select, textarea, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+pre {
+  background: #111827;
+  color: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.small-btn {
+  width: auto;
+  display: inline-block;
+  margin-right: 8px;
+}
