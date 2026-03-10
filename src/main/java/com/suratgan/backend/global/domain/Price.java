@@ -30,4 +30,7 @@ public class Price {
         }
         return new Price(this.value * multiplier);
     }
+    public int getValue() {
+        return value;
+    }
 }

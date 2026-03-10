@@ -3,13 +3,16 @@ package com.suratgan.backend.order.application;
 import com.suratgan.backend.global.domain.service.OwnerCheck;
 import com.suratgan.backend.global.domain.service.RoleCheck;
 import com.suratgan.backend.global.domain.service.UserDetails;
+import com.suratgan.backend.global.infrastructure.event.Events;
 import com.suratgan.backend.order.application.dto.OrderServiceDto;
 import com.suratgan.backend.order.domain.Order;
 import com.suratgan.backend.order.domain.OrderId;
 import com.suratgan.backend.order.domain.OrderItem;
-import com.suratgan.backend.order.domain.Orderer;
+import com.suratgan.backend.global.infrastructure.event.Events;
+import com.suratgan.backend.order.domain.event.OrderCreatedEvent;
 import com.suratgan.backend.order.domain.ProductInfo;
 import com.suratgan.backend.order.domain.StoreInfo;
+import com.suratgan.backend.order.domain.event.OrderCreatedEvent;
 import com.suratgan.backend.order.domain.service.OrderCheck;
 import com.suratgan.backend.order.infrastructure.OrderRepository;
 import com.suratgan.backend.store.domain.Menu;
@@ -17,7 +20,6 @@ import com.suratgan.backend.store.domain.MenuId;
 import com.suratgan.backend.store.domain.Store;
 import com.suratgan.backend.store.domain.StoreId;
 import com.suratgan.backend.store.domain.StoreRepository;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -90,6 +92,14 @@ public class OrderService {
             .build();
 
         orderRepository.save(order);
+
+        // 결제 요청 이벤트 발생
+        Events.trigger(
+            new OrderCreatedEvent(
+                order.getId().getId(),
+                order.getTotalOrderPrice().getValue()
+            )
+        );
 
         return order.getId();
     }
