@@ -29,6 +29,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/signup").permitAll()
                         .requestMatchers("/api/v1/email/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "swagger-ui.html",
+                                "api-docs/**",
+                                "api-docs/html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
