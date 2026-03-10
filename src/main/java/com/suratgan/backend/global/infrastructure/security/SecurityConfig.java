@@ -38,6 +38,12 @@ public class SecurityConfig {
                                 "api-docs/**",
                                 "api-docs/html"
                         ).permitAll()
+                        .requestMatchers(
+                            "/frontend/**",
+                            "/index.html",
+                            "/css/**",
+                            "/js/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())

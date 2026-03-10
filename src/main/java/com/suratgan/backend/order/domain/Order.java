@@ -178,9 +178,9 @@ public class Order extends BaseEntity {
      * 매장별 배송 불가 지역 체크 필요, 그러나 이 기능은 다른 도메인 기능이 필요하므로 도메인 서비스로 추가, 단순히 도메인 서비스에 주문 도메인의 delivery상태 변경 로직은 실행
      */
     public void delivery(RoleCheck roleCheck, OwnerCheck ownerCheck, OrderCheck orderCheck) {
-        if (status != OrderStatus.PAYMENT_CONFIRM) {
+        if (status != OrderStatus.PREPARING) {
             throw new IllegalStateException(
-                "입금 확인 상태에서만 배송 시작이 가능합니다. (현재 상태: " + status + ")"
+                "준비 상태에서만 배송 시작이 가능합니다. (현재 상태: " + status + ")"
             );
         }
 
@@ -271,5 +271,23 @@ public class Order extends BaseEntity {
         }
 
         this.status = target;
+    }
+
+    public void deliveryDone(RoleCheck roleCheck, OwnerCheck ownerCheck, OrderCheck orderCheck) {
+
+        if (status != OrderStatus.DELIVERY) {
+            throw new IllegalStateException(
+                "배송 중 상태에서만 배송 완료 처리가 가능합니다. (현재 상태: " + status + ")"
+            );
+        }
+
+        checkAuthority(roleCheck, ownerCheck, orderCheck);
+
+        changeStatus(OrderStatus.DELIVERY_DONE);
+    }
+
+    public void preparing(RoleCheck roleCheck, OwnerCheck ownerCheck, OrderCheck orderCheck) {
+        checkAuthority(roleCheck, ownerCheck, orderCheck);
+        changeStatus(OrderStatus.PREPARING);
     }
 }

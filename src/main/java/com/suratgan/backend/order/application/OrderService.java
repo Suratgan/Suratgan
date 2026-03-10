@@ -30,15 +30,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final StoreRepository storeRepository;
     private final OrderCheck orderCheck;
     private final RoleCheck roleCheck;
     private final OwnerCheck ownerCheck;
-    private final StoreRepository storeRepository;
 
+    /**
+     * 주문 생성
+     */
     @Transactional
     public OrderId createOrder(OrderServiceDto.Create request, UserDetails userDetails) {
 
-        // 1. 가게 정보 조회
+        // 1. 가게 조회
         Store store = storeRepository
             .findById(StoreId.of(request.getStoreId()))
             .orElseThrow(() -> new NoSuchElementException("가게를 찾을 수 없습니다."));
@@ -91,12 +94,70 @@ public class OrderService {
         return order.getId();
     }
 
+    /**
+     * 주문 접수
+     */
+    @Transactional
+    public void acceptOrder(UUID orderId) {
+
+        Order order = findOrder(orderId);
+
+        order.orderAccept(roleCheck, ownerCheck, orderCheck);
+    }
+
+    /**
+     * 주문 취소
+     */
     @Transactional
     public void cancelOrder(UUID orderId) {
 
-        Order order = orderRepository.findById(OrderId.of(orderId))
-            .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다."));
+        Order order = findOrder(orderId);
 
         order.cancel(roleCheck, ownerCheck, orderCheck);
+    }
+
+    /**
+     * 배송 시작
+     */
+    @Transactional
+    public void startDelivery(UUID orderId) {
+
+        Order order = findOrder(orderId);
+
+        order.delivery(roleCheck, ownerCheck, orderCheck);
+    }
+
+    /**
+     * 주문 완료 처리
+     */
+    @Transactional
+    public void completeOrder(UUID orderId) {
+
+        Order order = findOrder(orderId);
+
+        order.done(roleCheck, ownerCheck);
+    }
+
+    /**
+     * 공통 주문 조회
+     */
+    private Order findOrder(UUID orderId) {
+
+        return orderRepository.findById(OrderId.of(orderId))
+            .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다."));
+    }
+
+    @Transactional
+    public void deliveryDone(UUID orderId) {
+
+        Order order = findOrder(orderId);
+
+        order.deliveryDone(roleCheck, ownerCheck, orderCheck);
+    }
+
+    @Transactional
+    public void preparing(UUID orderId) {
+        Order order = findOrder(orderId);
+        order.preparing(roleCheck, ownerCheck, orderCheck);
     }
 }
