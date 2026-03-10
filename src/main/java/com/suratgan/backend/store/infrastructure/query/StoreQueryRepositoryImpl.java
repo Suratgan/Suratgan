@@ -66,9 +66,6 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
         }
 
         // 카테고리
-//        if (request.getCategoryNames() != null && !request.getCategoryNames().isEmpty()) {
-//            builder.and(store.categories.any().categoryId..in(request.getCategoryIds()));
-//        }
         if (request.getCategoryNames() != null && !request.getCategoryNames().isEmpty()) {
             List<UUID> categoryIds = queryFactory
                     .select(category.id.id)
