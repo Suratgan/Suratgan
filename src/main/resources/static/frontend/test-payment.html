@@ -1,116 +1,81 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>궁중 수라간 | 결제 테스트</title>
-    <link rel="stylesheet" href="./css/style.css" />
-    <script src="https://js.tosspayments.com/v1"></script>
+    <meta charset="utf-8" />
+    <title>수라간 결제 (배포 준비 완료)</title>
 </head>
 <body>
-<div class="container page-shell">
+<div style="text-align: center; margin-top: 50px;">
+    <h2>🍱 수라간 주문하기</h2>
 
-    <section class="hero">
-        <div class="hero-badge">결제 · Royal Payment Gateway</div>
-        <h1 class="hero-title">궁중 수라간 결제 테스트</h1>
-        <p class="hero-subtitle">
-            주문 이후 최종 결제 단계를 시연하는 화면입니다.
-            기존 TossPayments 연동 로직은 유지하고, 발표용으로 더 고급스럽게 보이도록 구성했습니다.
-        </p>
-    </section>
+    <div style="margin-bottom: 20px;">
+        이름: <input type="text" id="userName" value="박수라"><br>
+        이메일: <input type="email" id="userEmail" value="test@suratgan.com">
+    </div>
 
-    <section class="card">
-        <div class="topbar">
-            <div class="brand">
-                <div class="brand-mark">錢</div>
-                <div class="brand-text">
-                    <h2>카드 결제 테스트</h2>
-                    <p>테스트 키를 사용해 결제 흐름을 확인할 수 있습니다.</p>
-                </div>
-            </div>
-            <span class="badge">TOSS PAYMENTS</span>
-        </div>
-
-        <div class="table-like">
-            <div class="kv">
-                <strong>주문명</strong>
-                <span>수라간 테스트 주문</span>
-            </div>
-            <div class="kv">
-                <strong>결제금액</strong>
-                <span>15,000원</span>
-            </div>
-            <div class="kv">
-                <strong>결제수단</strong>
-                <span>카드</span>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <button id="pay-button" type="button">카드 결제하기</button>
-
-        <p class="footer-note">
-            실제 운영 환경에서는 테스트 키가 아닌 실사용 키와 실제 주문 ID를 연결해야 합니다.
-        </p>
-    </section>
-
-    <section class="card">
-        <div class="section-title">
-            <h3 class="card-title">발표 포인트</h3>
-        </div>
-
-        <div class="table-like">
-            <div class="kv">
-                <strong>1</strong>
-                <span>주문 생성 이후 결제 단계로 자연스럽게 연결되는 흐름을 보여줄 수 있습니다.</span>
-            </div>
-            <div class="kv">
-                <strong>2</strong>
-                <span>결제 버튼 하나로 외부 결제창 연동 여부를 직관적으로 시연할 수 있습니다.</span>
-            </div>
-            <div class="kv">
-                <strong>3</strong>
-                <span>브랜드 톤을 맞춰 전체 서비스가 하나의 제품처럼 보이게 합니다.</span>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="actions">
-            <a href="./app.html" class="nav-card" style="padding: 14px 18px; flex: 1; min-width: 220px;">
-                <h4 class="nav-card-title" style="margin-bottom: 4px;">주문 화면으로 돌아가기</h4>
-                <p class="nav-card-desc">주문 생성 및 리뷰 화면으로 이동합니다.</p>
-            </a>
-
-            <a href="./index.html" class="nav-card" style="padding: 14px 18px; flex: 1; min-width: 220px;">
-                <h4 class="nav-card-title" style="margin-bottom: 4px;">로비로 이동</h4>
-                <p class="nav-card-desc">메인 프론트 로비 화면으로 돌아갑니다.</p>
-            </a>
-        </div>
-    </section>
-
+    <button id="pay-button" style="padding: 15px 30px; font-size: 18px; cursor: pointer; background: #3182f6; color: white; border: none; border-radius: 8px;">
+        결제하기
+    </button>
 </div>
 
+<script src="https://js.tosspayments.com/v2/standard"></script>
+
 <script>
-    const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+    const clientKey = "test_ck_eqRGgYO1r5yAWNA95JybrQnN2Eya";
     const tossPayments = TossPayments(clientKey);
 
-    document.getElementById("pay-button").onclick = function () {
-        tossPayments.requestPayment("카드", {
-            amount: 15000,
-            orderId: "ORDER_" + new Date().getTime(),
-            orderName: "수라간 테스트 주문",
-            successUrl: window.location.origin + "/success.html",
-            failUrl: window.location.origin + "/fail.html",
-        }).catch(function (error) {
-            if (error.code === "USER_CANCEL") {
-                alert("결제를 취소하셨습니다.");
-            } else {
-                alert(error.message);
-            }
-        });
-    };
+
+    function getStoreIdFromUrl() {
+        return "YOUR-ACTUAL-STORE-UUID";
+    }
+
+    function getItemsFromCart() {
+
+        return [
+            { menuId: "YOUR-ACTUAL-MENU-UUID", quantity: 1 }
+        ];
+    }
+
+    async function requestOrder() {
+        try {
+            const orderRequest = {
+                storeId: getStoreIdFromUrl(),
+                ordererName: document.getElementById('userName').value,
+                ordererEmail: document.getElementById('userEmail').value,
+                ordererMobile: "010-0000-0000",
+                items: getItemsFromCart()
+            };
+
+
+            const response = await fetch('/api/v1/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderRequest)
+            });
+
+            if (!response.ok) throw new Error("주문 생성 실패!");
+            const data = await response.json(); // { orderId, amount, storeName }
+
+            const payment = tossPayments.payment({
+                customerKey: "SURAGAN_USER_" + data.orderId.substring(0, 8),
+            });
+
+            await payment.requestPayment({
+                method: "CARD",
+                amount: { currency: "KRW", value: data.amount },
+                orderId: data.orderId,
+                orderName: data.storeName + " 주문",
+                successUrl: window.location.origin + "/frontend/success.html",
+                failUrl: window.location.origin + "/frontend/fail.html",
+            });
+
+        } catch (error) {
+            console.error("오류 발생:", error);
+            alert(error.message);
+        }
+    }
+
+    document.getElementById('pay-button').addEventListener('click', requestOrder);
 </script>
 </body>
 </html>

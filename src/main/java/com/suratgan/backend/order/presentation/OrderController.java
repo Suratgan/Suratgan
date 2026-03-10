@@ -5,6 +5,7 @@ import com.suratgan.backend.order.application.OrderService;
 import com.suratgan.backend.order.application.dto.OrderServiceDto;
 import com.suratgan.backend.order.application.query.OrderQueryService;
 import com.suratgan.backend.order.domain.OrderId;
+import com.suratgan.backend.order.presentation.dto.OrderCreateResponse;
 import com.suratgan.backend.order.presentation.dto.OrderResponse;
 import com.suratgan.backend.order.presentation.dto.OrderSummaryResponse;
 import java.util.List;
@@ -28,7 +29,7 @@ public class OrderController {
 
     // 주문 생성
     @PostMapping("/orders")
-    public OrderId createOrder(@RequestBody OrderServiceDto.Create request, UserDetails userDetails) {
+    public OrderCreateResponse createOrder(@RequestBody OrderServiceDto.Create request, UserDetails userDetails) {
         return orderService.createOrder(request, userDetails);
     }
 
