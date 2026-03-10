@@ -62,9 +62,9 @@ public class StoreService {
                 .categoryCheck(categoryCheck)
                 .build();
         
-        storeRepository.save(newStore);
+        newStore = storeRepository.save(newStore);
 
-        return ResponseEntity.ok("음식점 생성 완료");
+        return ResponseEntity.ok("음식점 생성 완료! 음식점 ID: " + newStore.getId().getId());
     }
 
     @Transactional
@@ -86,7 +86,7 @@ public class StoreService {
                 .toList();
         store.changeStore(request.getOwerName(), request.getStoreName(), request.getAddress(), categoryIds, addressToCoords, roleCheck, ownerCheck, categoryCheck);
 
-        return ResponseEntity.ok("음식점 수정 완료");
+        return ResponseEntity.ok("음식점 수정 완료! 음식점 ID: " + store.getId().getId());
     }
 
     @Transactional

@@ -6,10 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Builder
 public class StoreResponseDto {
+    private UUID id;
     private String name;
     private double rating;
     private long reviewCnt;
@@ -17,6 +19,7 @@ public class StoreResponseDto {
 
     public static StoreResponseDto from(Store store) {
         return StoreResponseDto.builder()
+                .id(store.getId().getId())
                 .name(store.getStoreName())
                 .rating(store.getRating())
                 .reviewCnt(store.getReviewCnt())
