@@ -98,8 +98,4 @@ public class MenuService {
 
         return ResponseEntity.ok("숨김 상태 변경 완료");
     }
-
-    private String menuInfoGeneratedFromAi(String menuName, String menuInfo) {
-        return menuDescriptionGenerate.generate(menuName, menuInfo);
-    }
 }
