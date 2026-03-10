@@ -28,6 +28,11 @@ public class SecurityUserDetails implements UserDetails {
     }
 
     @Override
+    public String getRole() {
+        return "";
+    }
+
+    @Override
     public boolean isAuthenticated() {
         return true;
     }
