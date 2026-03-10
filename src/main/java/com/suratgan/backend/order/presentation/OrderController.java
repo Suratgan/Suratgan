@@ -56,9 +56,40 @@ public class OrderController {
         return orderQueryService.getStoreOrder(storeId, orderId);
     }
 
+    // 주문 상태 변경(주문 접수)
+    @PatchMapping("/orders/{orderId}/accept")
+    public void acceptOrder(@PathVariable UUID orderId) {
+        orderService.acceptOrder(orderId);
+    }
+
+    // 주문 상태 변경(배송 시작)
+    @PatchMapping("/orders/{orderId}/delivery")
+    public void startDelivery(@PathVariable UUID orderId) {
+        orderService.startDelivery(orderId);
+    }
+
+    // 주문 상태 변경(주문 완료)
+    @PatchMapping("/orders/{orderId}/done")
+    public void doneOrder(@PathVariable UUID orderId) {
+        orderService.completeOrder(orderId);
+    }
+
+
     // 주문 취소
     @PatchMapping("/orders/{orderId}/cancel")
     public void cancelOrder(@PathVariable UUID orderId) {
         orderService.cancelOrder(orderId);
+    }
+
+    // 주문 상태 변경(배송 완료)
+    @PatchMapping("/orders/{orderId}/delivery-done")
+    public void deliveryDone(@PathVariable UUID orderId) {
+        orderService.deliveryDone(orderId);
+    }
+
+    // 주문 준비 중
+    @PatchMapping("/orders/{orderId}/preparing")
+    public void preparing(@PathVariable UUID orderId) {
+        orderService.preparing(orderId);
     }
 }

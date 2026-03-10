@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>주문/리뷰 화면</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <script src="./js/config.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/app.js" defer></script>
+</head>
+<body>
+<div class="container">
+
+  <div class="card">
+    <h2>내 정보</h2>
+    <button class="small-btn" onclick="loadMe()">내 정보 조회</button>
+    <button class="small-btn" onclick="logout()">로그아웃</button>
+    <pre id="meResult"></pre>
+  </div>
+
+  <div class="card">
+    <h2>카테고리 조회</h2>
+    <button onclick="loadCategories()">카테고리 전체 조회</button>
+    <pre id="categoryResult"></pre>
+  </div>
+
+  <div class="card">
+    <h2>스토어/메뉴 조회</h2>
+    <p>
+      이 부분은 제공된 컨트롤러에 GET 조회 엔드포인트가 확인되지 않아
+      실제 조회 API가 있다면 config.js의 storesByCategory, menusByStore를 수정해서 연결하면 됩니다.
+    </p>
+    <input id="categoryIdForStore" placeholder="categoryId 입력" />
+    <button onclick="loadStores()">카테고리별 스토어 조회</button>
+
+    <input id="storeIdForMenu" placeholder="storeId 입력" />
+    <button onclick="loadMenus()">스토어별 메뉴 조회</button>
+
+    <pre id="storeMenuResult"></pre>
+  </div>
+
+  <div class="card">
+    <h2>주문 생성</h2>
+    <p>OrderServiceDto.Create 구조를 정확히 몰라서 JSON 직접 입력형으로 만들었습니다.</p>
+    <textarea id="orderJson" rows="10">
+{
+  "storeId": "가게 UUID",
+  "orderItems": [
+    {
+      "productId": "메뉴 UUID",
+      "quantity": 1
+    }
+  ],
+  "deliveryAddress": "서울시 강남구 ...",
+  "deliveryAddressDetail": "101동 1001호",
+  "deliveryMemo": "문 앞에 놔주세요"
+}
+      </textarea>
+    <button onclick="createOrder()">주문 생성</button>
+    <pre id="orderCreateResult"></pre>
+  </div>
+
+  <div class="card">
+    <h2>내 주문 목록</h2>
+    <button onclick="loadMyOrders()">내 주문 목록 조회</button>
+    <pre id="myOrdersResult"></pre>
+  </div>
+
+  <div class="card">
+    <h2>주문 상세 조회</h2>
+    <input id="orderIdDetail" placeholder="orderId 입력" />
+    <button onclick="loadMyOrderDetail()">내 주문 상세 조회</button>
+    <pre id="myOrderDetailResult"></pre>
+  </div>
+
+  <div class="card">
+    <h2>주문 상태 변경</h2>
+    <input id="statusOrderId" placeholder="orderId 입력" />
+    <select id="orderAction">
+      <option value="accept">accept</option>
+      <option value="preparing">preparing</option>
+      <option value="delivery">delivery</option>
+      <option value="delivery-done">delivery-done</option>
+      <option value="done">done</option>
+      <option value="cancel">cancel</option>
+    </select>
+    <button onclick="updateOrderStatus()">상태 변경</button>
+    <pre id="orderStatusResult"></pre>
+  </div>
+
+  <div class="card">
+    <h2>리뷰 작성</h2>
+    <input id="reviewOrderId" placeholder="orderId 입력" />
+    <input id="reviewSubject" placeholder="리뷰 제목" />
+    <textarea id="reviewContent" rows="5" placeholder="리뷰 내용"></textarea>
+    <input id="reviewScore" type="number" min="1" max="5" placeholder="별점 1~5" />
+    <button onclick="createReview()">리뷰 작성</button>
+    <pre id="reviewResult"></pre>
+  </div>
+
+</div>
+</body>
+</html>
