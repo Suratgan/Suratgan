@@ -15,6 +15,7 @@ import com.suratgan.backend.order.domain.StoreInfo;
 import com.suratgan.backend.order.domain.event.OrderCreatedEvent;
 import com.suratgan.backend.order.domain.service.OrderCheck;
 import com.suratgan.backend.order.infrastructure.OrderRepository;
+import com.suratgan.backend.order.presentation.dto.OrderCreateResponse;
 import com.suratgan.backend.store.domain.Menu;
 import com.suratgan.backend.store.domain.MenuId;
 import com.suratgan.backend.store.domain.Store;
@@ -41,7 +42,7 @@ public class OrderService {
      * 주문 생성
      */
     @Transactional
-    public OrderId createOrder(OrderServiceDto.Create request, UserDetails userDetails) {
+    public OrderCreateResponse createOrder(OrderServiceDto.Create request, UserDetails userDetails) {
 
         // 1. 가게 조회
         Store store = storeRepository
@@ -87,6 +88,7 @@ public class OrderService {
             .storeName(storeInfo.getStoreName())
             .storeAddress(storeInfo.getStoreAddress())
             .orderItems(items)
+            .ownerCheck(ownerCheck)
             .orderCheck(orderCheck)
             .userDetails(userDetails)
             .build();
@@ -101,7 +103,11 @@ public class OrderService {
             )
         );
 
-        return order.getId();
+        return new OrderCreateResponse(
+                order.getId().getId(),
+                order.getTotalOrderPrice().getValue(),
+                order.getStoreInfo().getStoreName()
+        );
     }
 
     /**

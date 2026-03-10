@@ -80,14 +80,14 @@ public class Order extends BaseEntity {
 
     // 주문 생성
     @Builder
-    public Order(UUID orderId, String ordererName, String ordererMobile, String ordererEmail, UUID storeId, String storeName, String storeAddress, String storeTel, List<OrderItem> orderItems, String deliveryAddress, String deliveryAddressDetail, String deliveryMemo, OrderCheck orderCheck, UserDetails userDetails) {
+    public Order(UUID orderId, String ordererName, String ordererMobile, String ordererEmail, UUID storeId, String storeName, String storeAddress, String storeTel, List<OrderItem> orderItems, String deliveryAddress, String deliveryAddressDetail, String deliveryMemo, RoleCheck roleCheck, OwnerCheck ownerCheck, OrderCheck orderCheck, UserDetails userDetails) {
 
         // 로그인 체크 여부
         checkAuthenticated(userDetails);
 
         this.id = orderId == null ? OrderId.of() : OrderId.of(orderId);
         this.orderer = new Orderer(
-            userDetails.getId(),
+            ownerCheck.getOwnerId(),
             StringUtils.hasText(ordererName) ? ordererName : userDetails.getName(),
             StringUtils.hasText(ordererMobile) ? ordererMobile : userDetails.getMobile(),
             StringUtils.hasText(ordererEmail) ? ordererEmail : userDetails.getEmail()
@@ -252,11 +252,20 @@ public class Order extends BaseEntity {
     }
 
     // 로그인 여부 체크
-    private void checkAuthenticated(
-        com.suratgan.backend.global.domain.service.UserDetails userDetails) {
-        if (userDetails.getId() == null || !userDetails.isAuthenticated()) {
-            throw new IllegalStateException("주문은 로그인한 사용자만 가능합니다.");
+    private void checkAuthenticated(UserDetails userDetails) {
+
+        if (userDetails == null) {
+            throw new RuntimeException("로그인 필요");
         }
+//        if (roleCheck.hasRole(List.of("CUSTOMER", "OWNER", "MANAGER", "MASTER"))) {
+//            return;
+//        } else {
+//            throw new IllegalStateException("주문은 로그인한 사용자만 가능합니다.");
+//        }
+
+//        if (userDetails.getId() == null || !userDetails.isAuthenticated()) {
+//            throw new IllegalStateException("주문은 로그인한 사용자만 가능합니다.");
+//        }
     }
 
     // 주문 상태 변경 메서드(예: 입금 확인, 배달 준비, 배달 중 등)
