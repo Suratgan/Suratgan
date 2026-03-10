@@ -1,3 +1,7 @@
 spring:
   config:
     import: optional:file:.env[.properties]
+
+  jpa:
+    hibernate:
+      ddl-auto: ${DB_DDL_AUTO:update}

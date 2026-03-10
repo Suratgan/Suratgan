@@ -3,6 +3,7 @@ package com.suratgan.backend.global.presentation;
 import com.suratgan.backend.global.exception.BusinessException;
 import com.suratgan.backend.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -28,7 +30,7 @@ public class GlobalExceptionHandler {
                 .message(ec.getMessage())
                 .path(req.getRequestURI())
                 .build();
-
+        log.error("HTTP ERROR: {}", e.getMessage(), e);
         return ResponseEntity.status(ec.getStatus()).body(body);
     }
 
@@ -53,6 +55,7 @@ public class GlobalExceptionHandler {
                 .fieldErrors(fieldErrors)
                 .build();
 
+        log.error("HTTP ERROR: {}", e.getMessage(), e);
         return ResponseEntity.badRequest().body(body);
     }
     // 사용자가 잘못 호출했을 때
@@ -66,7 +69,7 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .path(req.getRequestURI())
                 .build();
-
+        log.error("HTTP ERROR: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
@@ -81,7 +84,7 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .path(req.getRequestURI())
                 .build();
-
+        log.error("HTTP ERROR: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
     // 그 외 예외
@@ -95,7 +98,7 @@ public class GlobalExceptionHandler {
                 .message("서버 오류가 발생했습니다.")
                 .path(req.getRequestURI())
                 .build();
-
+        log.error("HTTP ERROR: {}", e.getMessage(), e);
         return ResponseEntity.status(500).body(body);
     }
 }

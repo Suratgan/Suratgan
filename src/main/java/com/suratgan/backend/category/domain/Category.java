@@ -51,9 +51,9 @@ public class Category extends BaseEntity {
 
     // 권한 체크
     private void checkAuthority(RoleCheck roleCheck) {
-        if (!roleCheck.hasRole(List.of("MANAGER", "MASTER"))) {
+        if (!roleCheck.hasRole(List.of("OWNER", "MANAGER", "MASTER"))) {
             // 공통 Exception 로직 정의 후 추가
-            //throw new UnAuthorizedException();
+            throw new IllegalArgumentException("권한이 없습니다.");
         }
     }
 }
