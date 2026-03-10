@@ -19,7 +19,7 @@ public class OrderServiceDto {
         private UUID storeId;
         private String storeName;
         private String storeAddress;
-        private String storeTel;
+//        private String storeTel;
 
         private List<Item> items;
     }
@@ -28,7 +28,7 @@ public class OrderServiceDto {
     @NoArgsConstructor
     public static class Item {
 
-        private UUID menuId;
+        private int menuId;
         private int quantity;
     }
 }

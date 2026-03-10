@@ -12,4 +12,8 @@ import lombok.*;
 public class MenuId {
     //private StoreId storeId;
     private int menuIdx;
+
+    public static MenuId of(int menuIdx) {
+        return new MenuId(menuIdx);
+    }
 }

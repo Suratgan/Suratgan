@@ -1,5 +1,6 @@
 package com.suratgan.backend.global.infrastructure.security;
 
+import com.suratgan.backend.auth.domain.TokenBlacklistRepository;
 import com.suratgan.backend.auth.infrastructure.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,17 +18,25 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider, TokenBlacklistRepository tokenBlacklistRepository) throws Exception {
         System.out.println("securityConfig loaded");
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, tokenBlacklistRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/users/signup").permitAll()
                         .requestMatchers("/api/v1/email/**").permitAll()
+                        .requestMatchers("/api/v1/orders").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "swagger-ui.html",
+                                "api-docs/**",
+                                "api-docs/html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())

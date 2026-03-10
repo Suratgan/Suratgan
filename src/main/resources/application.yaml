@@ -1,6 +1,10 @@
 spring:
   application:
     name: Suratgan
+  data:
+    redis:
+      host: localhost
+      port: 6379
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -9,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: ${DB_DDL_AUTO:create}
+      ddl-auto: ${DB_DDL_AUTO:update}
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

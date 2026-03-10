@@ -1,5 +1,6 @@
 package com.suratgan.backend.order.domain.service;
 
+import com.suratgan.backend.order.domain.OrderId;
 import com.suratgan.backend.order.domain.OrderItem;
 import java.util.List;
 import java.util.UUID;
@@ -15,4 +16,5 @@ public interface OrderCheck {
      * @return
      */
     boolean isOrderable(UUID storeId, List<OrderItem> items);   // 주문 가능 여부 체크
+    boolean isMyOrder(OrderId orderId); // 주문이 로그인한 회원의 주문인지 체크
 }

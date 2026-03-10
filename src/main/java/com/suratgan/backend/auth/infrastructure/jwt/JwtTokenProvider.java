@@ -71,4 +71,14 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public Date getExpiration(String token) {
+        return parseClaims(token).getExpiration();
+    }
+
+    public long getRemainingMillis(String token) {
+        Date expiration = getExpiration(token);
+        long remain = expiration.getTime() - System.currentTimeMillis();
+        return Math.max(remain, 0);
+    }
 }
