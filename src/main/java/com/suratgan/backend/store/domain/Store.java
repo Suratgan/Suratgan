@@ -67,14 +67,6 @@ public class Store extends BaseEntity {
             throw new IllegalArgumentException("이미 보유한 매장이 있습니다.");
         }
 
-        this.id = storeId == null ? StoreId.of() : StoreId.of(storeId);
-        this.owner = new Owner(ownerCheck.getOwnerId(), ownerCheck.getOwnerRole(), ownerCheck.getOwnerName());
-        this.storeName = storeName;
-        this.rating = 0;
-        this.totalRating = 0;
-        this.reviewCnt = 0;
-        this.location = new StoreLocation(address, addressToCoords);
-
         // 카테고리 설정
         createCategory(StoreDto.CategoryDto
                 .builder()
@@ -83,6 +75,14 @@ public class Store extends BaseEntity {
                 .categoryCheck(categoryCheck)
                 .categoryIds(categoryIds)
                 .build());
+
+        this.id = storeId == null ? StoreId.of() : StoreId.of(storeId);
+        this.owner = new Owner(ownerCheck.getOwnerId(), ownerCheck.getOwnerRole(), ownerCheck.getOwnerName());
+        this.storeName = storeName;
+        this.rating = 0;
+        this.totalRating = 0;
+        this.reviewCnt = 0;
+        this.location = new StoreLocation(address, addressToCoords);
     }
 
     // 음식점 수정
