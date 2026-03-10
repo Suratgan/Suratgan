@@ -28,7 +28,11 @@ public enum ErrorCode {
 
     ADDRESS_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "ADDRESS_ALREADY_EXISTS", "이미 등록된 배달 주소가 있습니다."),
     INVALID_ADDRESS(HttpStatus.BAD_REQUEST, "INVALID_ADDRESS", "유효한 주소가 아닙니다."),
-    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS_NOT_FOUND", "등록된 배달 주소가 없습니다.");
+    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS_NOT_FOUND", "등록된 배달 주소가 없습니다."),
+
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE_NOT_FOUND", "존재하지 않는 매장입니다."),
+    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "MENU_NOT_FOUND", "존재하지 않는 메뉴입니다.");
+
 
     private final HttpStatus status;
     private final String code;

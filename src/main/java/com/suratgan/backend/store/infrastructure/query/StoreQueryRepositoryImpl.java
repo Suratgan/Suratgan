@@ -5,12 +5,13 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.suratgan.backend.category.domain.QCategory;
 import com.suratgan.backend.store.domain.Menu;
 import com.suratgan.backend.store.domain.QStore;
 import com.suratgan.backend.store.domain.Store;
 import com.suratgan.backend.store.domain.StoreId;
 import com.suratgan.backend.store.domain.query.StoreQueryRepository;
-import com.suratgan.backend.store.domain.query.dto.StoreQueryDto;
+import com.suratgan.backend.store.presentation.dto.StoreSearchDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.util.StringUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -40,16 +42,17 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
 
     @Override
     // 음식점 전체 조회
-    public Page<Store> findAll(StoreQueryDto.Search search, Pageable pageable) {
+    public Page<Store> findAll(StoreSearchDto request, Pageable pageable) {
         QStore store = QStore.store;
-        BooleanBuilder builder = new BooleanBuilder();
+        QCategory category = QCategory.category;
 
+        BooleanBuilder builder = new BooleanBuilder();
         builder.and(store.deletedAt.isNull());
 
         // 거리 기반 필터링
         NumberExpression<Double> distanceMeter = null;
-        if (search.getLongitude() != null && search.getLatitude() != null) {
-            String userPoint = "POINT(%.10f %.10f)".formatted(search.getLongitude(), search.getLatitude());
+        if (request.getLongitude() != null && request.getLatitude() != null) {
+            String userPoint = "POINT(%.10f %.10f)".formatted(request.getLongitude(), request.getLatitude());
             distanceMeter = Expressions.numberTemplate(Double.class,
                     "ST_DistanceSphere(ST_SetSRID(ST_MakePoint({0}, {1}), 4326), ST_GeomFromText({2}, 4326))",
                     store.location.longitude, store.location.latitude, userPoint);
@@ -58,13 +61,23 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
         }
 
         // 매장명
-        if (StringUtils.hasText(search.getStoreName())) {
-            builder.and(store.storeName.containsIgnoreCase(search.getStoreName()));
+        if (StringUtils.hasText(request.getStoreName())) {
+            builder.and(store.storeName.containsIgnoreCase(request.getStoreName()));
         }
 
         // 카테고리
-        if (search.getCategoryIds() != null && !search.getCategoryIds().isEmpty()) {
-            builder.and(store.categories.any().categoryId.in(search.getCategoryIds()));
+        if (request.getCategoryNames() != null && !request.getCategoryNames().isEmpty()) {
+            List<UUID> categoryIds = queryFactory
+                    .select(category.id.id)
+                    .from(category)
+                    .where(category.categoryName.in(request.getCategoryNames()))
+                    .fetch();
+
+            if (categoryIds.isEmpty()) {
+                return Page.empty(pageable);
+            }
+
+            builder.and(store.categories.any().categoryId.in(categoryIds));
         }
 
         // 데이터 조회
@@ -102,6 +115,7 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
 
         return resultStore.getMenus().stream()
                 .filter(m -> m.getMenuId().getMenuIdx() == menuIdx)
+                .filter(Menu::isVisible)
                 .findFirst();
     }
 
@@ -116,6 +130,7 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
                 .where(store.id.eq(id))
                 .fetchOne();
 
-        return resultStore == null ? Collections.emptyList() : resultStore.getMenus();
+        return resultStore == null ? Collections.emptyList()
+                : resultStore.getMenus().stream().filter(Menu::isVisible).toList();
     }
 }
