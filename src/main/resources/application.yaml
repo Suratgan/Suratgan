@@ -1,6 +1,10 @@
 spring:
   application:
     name: Suratgan
+  data:
+    redis:
+      host: localhost
+      port: 6379
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
