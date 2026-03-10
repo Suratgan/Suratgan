@@ -7,6 +7,7 @@ import com.suratgan.backend.store.domain.Store;
 import com.suratgan.backend.store.domain.StoreId;
 import com.suratgan.backend.store.domain.StoreRepository;
 import com.suratgan.backend.store.domain.dto.StoreDto;
+import com.suratgan.backend.store.domain.service.MenuDescriptionGenerate;
 import com.suratgan.backend.store.presentation.dto.MenuCreateRequestDto;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ public class MenuService {
     private final StoreRepository storeRepository;
     private final RoleCheck roleCheck;
     private final OwnerCheck ownerCheck;
+    private final MenuDescriptionGenerate menuDescriptionGenerate;
 
     @Transactional
     public ResponseEntity<String> create(UUID storeId, @Valid MenuCreateRequestDto request) {
@@ -34,9 +36,12 @@ public class MenuService {
         Store store = storeRepository.findById(StoreId.of(storeId))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식점입니다."));
 
+        String menuInfo = request.isAiGenerated() ?
+                menuDescriptionGenerate.generate(request.getName(), request.getMenuInfo()) : request.getMenuInfo();
+
         StoreDto.MenuDto menuDto = StoreDto.MenuDto.builder()
                 .name(request.getName())
-                .menuInfo(request.getMenuInfo())
+                .menuInfo(menuInfo)
                 .price(request.getPrice())
                 .menuImg(request.getMenuImg())
                 .roleCheck(roleCheck)
@@ -57,9 +62,12 @@ public class MenuService {
         Store store = storeRepository.findById(StoreId.of(storeId))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식점입니다."));
 
+        String menuInfo = request.isAiGenerated() ?
+                menuDescriptionGenerate.generate(request.getName(), request.getMenuInfo()) : request.getMenuInfo();
+
         StoreDto.MenuDto menuDto = StoreDto.MenuDto.builder()
                 .name(request.getName())
-                .menuInfo(request.getMenuInfo())
+                .menuInfo(menuInfo)
                 .price(request.getPrice())
                 .menuImg(request.getMenuImg())
                 .roleCheck(roleCheck)
