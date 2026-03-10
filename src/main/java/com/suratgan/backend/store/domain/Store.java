@@ -8,6 +8,7 @@ import com.suratgan.backend.store.domain.dto.StoreDto;
 import com.suratgan.backend.store.domain.exception.MenuNotFoundException;
 import com.suratgan.backend.category.domain.service.CategoryCheck;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -46,7 +47,7 @@ public class Store extends BaseEntity {
 
     // 음식점 - 음식 관계
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "P_STORE_MENU", joinColumns = @JoinColumn(name="store_id"))
+    @CollectionTable(name = "P_MENU", joinColumns = @JoinColumn(name="store_id"))
     @OrderColumn(name="menu_orders")
     private List<Menu> menus;
 
@@ -142,6 +143,7 @@ public class Store extends BaseEntity {
 
     // 음식(MENU)
     // 음식 생성
+    @Transactional
     public void createMenu(StoreDto.MenuDto dto) {
         checkAuthority(dto.getRoleCheck(), dto.getOwnerCheck());
 
