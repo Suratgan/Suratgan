@@ -2,25 +2,79 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>로그인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>궁중 수라간 | 로그인</title>
   <link rel="stylesheet" href="./css/style.css" />
   <script src="./js/config.js"></script>
   <script src="./js/api.js"></script>
   <script src="./js/login.js" defer></script>
 </head>
 <body>
-<div class="container">
-  <div class="card">
-    <h2>로그인</h2>
-    <input id="nickname" type="text" placeholder="nickname" />
-    <input id="password" type="password" placeholder="password" />
-    <button onclick="login()">로그인</button>
-  </div>
+<div class="container auth-shell">
+  <div class="auth-card page-shell">
 
-  <div class="card">
-    <h3>결과</h3>
-    <pre id="result"></pre>
-    <a href="./app.html">앱 화면으로 이동</a>
+    <section class="hero">
+      <div class="hero-badge">인증 · Access Gateway</div>
+      <h1 class="hero-title">궁중 수라간 로그인</h1>
+      <p class="hero-subtitle">
+        이메일과 비밀번호를 입력해 서비스에 입장하세요.
+        로그인 후 발급된 토큰을 기반으로 실제 주문·리뷰 기능을 테스트할 수 있습니다.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-mark">門</div>
+          <div class="brand-text">
+            <h2>사용자 인증</h2>
+            <p>고객과 점주 모두 동일한 화면에서 로그인할 수 있습니다.</p>
+          </div>
+        </div>
+        <span class="badge">JWT LOGIN</span>
+      </div>
+
+      <label for="nickname">닉네임</label>
+      <input id="nickname" type="text" placeholder="닉네임을 입력하세요" />
+
+      <label for="password">비밀번호</label>
+      <input id="password" type="password" placeholder="비밀번호를 입력하세요" />
+
+      <button type="button" onclick="login()">로그인</button>
+
+      <div class="divider"></div>
+
+      <div class="actions">
+        <a href="./signup.html" class="nav-card" style="padding: 14px 18px; flex: 1; min-width: 220px;">
+          <h4 class="nav-card-title" style="margin-bottom: 4px;">회원가입</h4>
+          <p class="nav-card-desc">아직 계정이 없다면 먼저 가입을 진행하세요.</p>
+        </a>
+
+        <a href="./index.html" class="nav-card" style="padding: 14px 18px; flex: 1; min-width: 220px;">
+          <h4 class="nav-card-title" style="margin-bottom: 4px;">로비로 이동</h4>
+          <p class="nav-card-desc">궁중 수라간 메인 화면으로 돌아갑니다.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h3 class="card-title">로그인 결과</h3>
+      </div>
+      <p class="form-note">
+        로그인 응답, 토큰 저장 결과, 오류 메시지 등이 아래에 표시됩니다.
+      </p>
+
+      <div class="result-box">
+        <p class="result-title">RESULT</p>
+        <pre id="result"></pre>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      로그인 성공 시 기존 스크립트 로직에 따라 앱 화면으로 이동하거나 토큰이 저장됩니다.
+    </p>
+
   </div>
 </div>
 </body>
