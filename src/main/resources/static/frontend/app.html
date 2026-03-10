@@ -97,23 +97,58 @@
     <div class="section-title">
       <h3 class="card-title">주문 생성</h3>
     </div>
+
     <p class="form-note">
-      원본과 동일하게 JSON 직접 입력 방식입니다. 주문 생성 DTO 구조에 맞춰 값을 입력하세요.
+      스토어와 메뉴 정보를 입력하여 주문을 생성합니다.
     </p>
 
-    <label for="orderJson">주문 JSON</label>
-    <textarea id="orderJson" rows="10">{
-  "storeId": "가게 UUID",
-  "orderItems": [
-    {
-      "productId": "메뉴 UUID",
-      "quantity": 1
-    }
-  ],
-  "deliveryAddress": "서울시 강남구 .",
-  "deliveryAddressDetail": "101동 1001호",
-  "deliveryMemo": "문 앞에 놔주세요"
-}</textarea>
+    <div class="row">
+      <div>
+        <label for="ordererName">주문자 이름</label>
+        <input id="ordererName" type="text" placeholder="예: 홍길동" />
+      </div>
+
+      <div>
+        <label for="ordererMobile">전화번호</label>
+        <input id="ordererMobile" type="text" placeholder="010-1234-1234" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="ordererEmail">이메일</label>
+        <input id="ordererEmail" type="text" placeholder="example@email.com" />
+      </div>
+
+      <div>
+        <label for="storeId">스토어 ID</label>
+        <input id="storeId" type="text" placeholder="store UUID 입력" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="storeNameOrder">스토어 이름</label>
+        <input id="storeNameOrder" type="text" placeholder="예: 수라간 본점" />
+      </div>
+
+      <div>
+        <label for="storeAddress">스토어 주소</label>
+        <input id="storeAddress" type="text" placeholder="서울 강남구 ..." />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="menuId">메뉴 ID</label>
+        <input id="menuId" type="number" placeholder="menuId 입력" />
+      </div>
+
+      <div>
+        <label for="quantity">수량</label>
+        <input id="quantity" type="number" value="1" />
+      </div>
+    </div>
 
     <button type="button" onclick="createOrder()">주문 생성</button>
 

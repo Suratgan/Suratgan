@@ -83,14 +83,39 @@ async function loadMenus() {
 
 async function createOrder() {
   try {
-    const raw = document.getElementById("orderJson").value;
-    const body = JSON.parse(raw);
 
-    const result = await apiRequest(CONFIG.ENDPOINTS.createOrder, "POST", body, true);
-    setText("orderCreateResult", result);
-    alert("주문 생성 요청 완료");
+    const token = getToken();
+
+    const body = {
+      ordererName: document.getElementById("ordererName").value,
+      ordererMobile: document.getElementById("ordererMobile").value,
+      ordererEmail: document.getElementById("ordererEmail").value,
+      storeId: document.getElementById("storeId").value,
+      storeName: document.getElementById("storeNameOrder").value,
+      storeAddress: document.getElementById("storeAddress").value,
+      items: [
+        {
+          menuId: parseInt(document.getElementById("menuId").value),
+          quantity: parseInt(document.getElementById("quantity").value)
+        }
+      ]
+    };
+
+    const response = await fetch(CONFIG.BASE_URL + CONFIG.ENDPOINTS.createOrder, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+
+    setText("orderCreateResult", data);
+
   } catch (e) {
-    setText("orderCreateResult", e.message);
+    setText("orderCreateResult", `주문 생성 실패: ${e.message}`);
   }
 }
 
