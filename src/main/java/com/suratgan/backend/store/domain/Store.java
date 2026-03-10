@@ -53,7 +53,7 @@ public class Store extends BaseEntity {
 
     // 음식점 - 카테고리 관계
     @ElementCollection(fetch=FetchType.LAZY)
-    @CollectionTable(name="P_STORE_CATEGORY", joinColumns = @JoinColumn(name="store_id"))
+    @CollectionTable(name="P_STORE_CATEGORY", joinColumns = @JoinColumn(name = "store_id", referencedColumnName = "id"))
     @OrderColumn(name="category_orders")
     private List<StoreCategory> categories;
 
