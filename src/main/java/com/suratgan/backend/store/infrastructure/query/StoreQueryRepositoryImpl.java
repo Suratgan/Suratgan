@@ -115,6 +115,7 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
 
         return resultStore.getMenus().stream()
                 .filter(m -> m.getMenuId().getMenuIdx() == menuIdx)
+                .filter(Menu::isVisible)
                 .findFirst();
     }
 
@@ -129,6 +130,7 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
                 .where(store.id.eq(id))
                 .fetchOne();
 
-        return resultStore == null ? Collections.emptyList() : resultStore.getMenus();
+        return resultStore == null ? Collections.emptyList()
+                : resultStore.getMenus().stream().filter(Menu::isVisible).toList();
     }
 }

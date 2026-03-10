@@ -111,7 +111,7 @@ public class Store extends BaseEntity {
 
         // 음식 삭제
         if (menus != null) {
-            menus.forEach(Menu::remove);
+            menus.clear();
         }
 
         // 카테고리 삭제

@@ -26,12 +26,12 @@ public class MenuService {
     private final OwnerCheck ownerCheck;
 
     @Transactional
-    public ResponseEntity<String> create(UUID id, @Valid MenuCreateRequestDto request) {
+    public ResponseEntity<String> create(UUID storeId, @Valid MenuCreateRequestDto request) {
         if (request == null) {
             return ResponseEntity.badRequest().body("요청 값이 비어있습니다.");
         }
 
-        Store store = storeRepository.findById(StoreId.of(id))
+        Store store = storeRepository.findById(StoreId.of(storeId))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식점입니다."));
 
         StoreDto.MenuDto menuDto = StoreDto.MenuDto.builder()
@@ -79,5 +79,15 @@ public class MenuService {
         store.removeMenu(roleCheck, ownerCheck, menuIds);
 
         return ResponseEntity.ok("메뉴 삭제 완료");
+    }
+
+    @Transactional
+    public ResponseEntity<String> hiddenMenu(UUID storeId, int menuIdx, boolean hidden) {
+        Store store = storeRepository.findById(StoreId.of(storeId))
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식점입니다."));
+
+        store.getMenu(MenuId.of(menuIdx)).changeHidden(hidden);
+
+        return ResponseEntity.ok("숨김 상태 변경 완료");
     }
 }

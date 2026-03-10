@@ -53,8 +53,8 @@ public class Menu {
     }
 
     // 숨김 처리 변경
-    public void changeHidden() {
-        isDeleted = !isDeleted;
+    public void changeHidden(boolean hidden) {
+        isDeleted = hidden;
     }
 
     // 상품 노출 가능 여부

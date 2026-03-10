@@ -22,6 +22,7 @@ public class StoreResponseDto {
                 .reviewCnt(store.getReviewCnt())
                 .menuImages(
                         store.getMenus().stream()
+                                .filter(Menu::isVisible)
                                 .map(Menu::getMenuImg)
                                 .filter(image -> image != null && !image.isBlank())
                                 .toList()

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -22,8 +23,8 @@ public class MenuController {
 
     @Operation(summary = "메뉴 생성")
     @PostMapping
-    public ResponseEntity<String> createMenu(@PathVariable("storeId") UUID id, @RequestBody @Valid MenuCreateRequestDto request) {
-        return menuService.create(id, request);
+    public ResponseEntity<String> createMenu(@PathVariable UUID storeId, @RequestBody @Valid MenuCreateRequestDto request) {
+        return menuService.create(storeId, request);
     }
 
     @Operation(summary = "메뉴 수정")
@@ -48,5 +49,11 @@ public class MenuController {
     @GetMapping
     public List<MenuResponseDto> searchMenus(@PathVariable UUID storeId) {
         return menuQueryService.searchMenus(storeId);
+    }
+
+    @Operation(summary = "메뉴 숨김 처리")
+    @PatchMapping("/{menuIdx}/status")
+    public ResponseEntity<String> hiddenMenu(@PathVariable UUID storeId, @PathVariable int menuIdx, @RequestBody Map<String, Boolean> hiddenMap) {
+        return menuService.hiddenMenu(storeId, menuIdx, hiddenMap.get("hidden"));
     }
 }
