@@ -36,11 +36,38 @@ async function loadCategories() {
 
 async function loadStores() {
   try {
-    const categoryId = document.getElementById("categoryIdForStore").value.trim();
-    const result = await apiRequest(CONFIG.ENDPOINTS.storesByCategory(categoryId), "GET", null, true);
+    const page = 0;
+
+    const storeName = document.getElementById("storeName")?.value?.trim() || "";
+    const latitude = document.getElementById("latitude")?.value?.trim() || "";
+    const longitude = document.getElementById("longitude")?.value?.trim() || "";
+    const categoryNamesRaw = document.getElementById("categoryNames")?.value?.trim() || "";
+
+    const params = new URLSearchParams();
+    params.append("page", page);
+
+    if (storeName) params.append("storeName", storeName);
+    if (latitude) params.append("latitude", latitude);
+    if (longitude) params.append("longitude", longitude);
+
+    if (categoryNamesRaw) {
+      categoryNamesRaw
+          .split(",")
+          .map(v => v.trim())
+          .filter(Boolean)
+          .forEach(category => params.append("categoryNames", category));
+    }
+
+    const result = await apiRequest(
+        `${CONFIG.ENDPOINTS.stores}?${params.toString()}`,
+        "GET",
+        null,
+        true
+    );
+
     setText("storeMenuResult", result);
   } catch (e) {
-    setText("storeMenuResult", `스토어 조회 실패: ${e.message}`);
+    setText("storeMenuResult", e.message);
   }
 }
 
