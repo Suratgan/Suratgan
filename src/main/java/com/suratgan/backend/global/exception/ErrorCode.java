@@ -24,7 +24,11 @@ public enum ErrorCode {
 
     PASSWORD_NOT_NULL(HttpStatus.BAD_REQUEST, "PASSWORD_NOT_NULL", "비밀번호는 비어있을 수 없습니다."),
     INVALID_CURRENT_PASSWORD(HttpStatus.BAD_REQUEST, "INVALID_CURRENT_PASSWORD", "현재 비밀번호가 올바르지 않습니다."),
-    SAME_AS_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "SAME_AS_OLD_PASSWORD", "새 비밀번호는 현재 비밀번호와 달라야 합니다.");
+    SAME_AS_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "SAME_AS_OLD_PASSWORD", "새 비밀번호는 현재 비밀번호와 달라야 합니다."),
+
+    ADDRESS_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "ADDRESS_ALREADY_EXISTS", "이미 등록된 배달 주소가 있습니다."),
+    INVALID_ADDRESS(HttpStatus.BAD_REQUEST, "INVALID_ADDRESS", "유효한 주소가 아닙니다."),
+    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS_NOT_FOUND", "등록된 배달 주소가 없습니다.");
 
     private final HttpStatus status;
     private final String code;
