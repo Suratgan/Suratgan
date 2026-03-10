@@ -114,6 +114,25 @@ async function createOrder() {
 
     setText("orderCreateResult", data);
 
+    if (data) {
+      if (data.orderId) {
+        document.getElementById("paymentOrderId").value = data.orderId;
+        document.getElementById("customerKey").value = "SURAGAN_USER_" + String(data.orderId).substring(0, 8);
+      }
+
+      if (data.amount) {
+        document.getElementById("paymentAmount").value = data.amount;
+      }
+
+      if (data.storeName) {
+        document.getElementById("paymentOrderName").value = `${data.storeName} 주문`;
+      }
+
+      document.getElementById("paymentCurrency").value = "KRW";
+      document.getElementById("paymentSuccessUrl").value = `${window.location.origin}/frontend/success.html`;
+      document.getElementById("paymentFailUrl").value = `${window.location.origin}/frontend/fail.html`;
+    }
+
   } catch (e) {
     setText("orderCreateResult", `주문 생성 실패: ${e.message}`);
   }
@@ -190,5 +209,68 @@ async function createReview() {
     alert("리뷰 작성 완료");
   } catch (e) {
     setText("reviewResult", e.message);
+  }
+}
+
+async function requestTossPayment() {
+  try {
+    if (typeof TossPayments === "undefined") {
+      throw new Error("TossPayments 스크립트가 로드되지 않았습니다.");
+    }
+
+    const clientKey = "test_ck_eqRGgYO1r5yAWNA95JybrQnN2Eya";
+    const tossPayments = TossPayments(clientKey);
+
+    const customerKey = document.getElementById("customerKey").value.trim();
+    const method = document.getElementById("paymentMethod").value.trim();
+    const amountValue = Number(document.getElementById("paymentAmount").value);
+    const currency = document.getElementById("paymentCurrency").value.trim() || "KRW";
+    const orderId = document.getElementById("paymentOrderId").value.trim();
+    const orderName = document.getElementById("paymentOrderName").value.trim();
+
+    const successUrl =
+        document.getElementById("paymentSuccessUrl").value.trim() ||
+        `${window.location.origin}/frontend/success.html`;
+
+    const failUrl =
+        document.getElementById("paymentFailUrl").value.trim() ||
+        `${window.location.origin}/frontend/fail.html`;
+
+    if (!customerKey) throw new Error("customerKey를 입력해주세요.");
+    if (!method) throw new Error("결제 수단을 선택해주세요.");
+    if (!amountValue || amountValue <= 0) throw new Error("올바른 결제 금액을 입력해주세요.");
+    if (!orderId) throw new Error("orderId를 입력해주세요.");
+    if (!orderName) throw new Error("orderName을 입력해주세요.");
+
+    setText("paymentResult", {
+      customerKey,
+      method,
+      amount: {
+        currency,
+        value: amountValue
+      },
+      orderId,
+      orderName,
+      successUrl,
+      failUrl
+    });
+
+    const payment = tossPayments.payment({
+      customerKey: customerKey
+    });
+
+    await payment.requestPayment({
+      method: method,
+      amount: {
+        currency: currency,
+        value: amountValue
+      },
+      orderId: orderId,
+      orderName: orderName,
+      successUrl: successUrl,
+      failUrl: failUrl
+    });
+  } catch (e) {
+    setText("paymentResult", `결제 요청 실패: ${e.message}`);
   }
 }

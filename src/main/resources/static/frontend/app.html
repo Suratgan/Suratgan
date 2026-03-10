@@ -8,6 +8,7 @@
   <script src="./js/config.js"></script>
   <script src="./js/api.js"></script>
   <script src="./js/app.js" defer></script>
+  <script src="https://js.tosspayments.com/v2/standard"></script>
 </head>
 <body>
 <div class="container page-shell">
@@ -155,6 +156,73 @@
     <div class="result-box">
       <p class="result-title">ORDER CREATE RESULT</p>
       <pre id="orderCreateResult"></pre>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-title">
+      <h3 class="card-title">결제</h3>
+    </div>
+
+    <p class="form-note">
+      Toss 결제 요청 필드를 직접 입력해 결제를 테스트합니다.
+    </p>
+
+    <div class="row">
+      <div>
+        <label for="customerKey">Customer Key</label>
+        <input id="customerKey" type="text" placeholder="예: SURAGAN_USER_1234ABCD" />
+      </div>
+
+      <div>
+        <label for="paymentMethod">결제 수단</label>
+        <select id="paymentMethod">
+          <option value="CARD">CARD</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="paymentAmount">결제 금액</label>
+        <input id="paymentAmount" type="number" placeholder="예: 15000" />
+      </div>
+
+      <div>
+        <label for="paymentCurrency">통화</label>
+        <input id="paymentCurrency" type="text" value="KRW" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="paymentOrderId">주문 ID</label>
+        <input id="paymentOrderId" type="text" placeholder="예: orderId" />
+      </div>
+
+      <div>
+        <label for="paymentOrderName">주문명</label>
+        <input id="paymentOrderName" type="text" placeholder="예: 수라간 본점 주문" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="paymentSuccessUrl">성공 URL</label>
+        <input id="paymentSuccessUrl" type="text" value="" placeholder="예: http://localhost:8080/frontend/success.html" />
+      </div>
+
+      <div>
+        <label for="paymentFailUrl">실패 URL</label>
+        <input id="paymentFailUrl" type="text" value="" placeholder="예: http://localhost:8080/frontend/fail.html" />
+      </div>
+    </div>
+
+    <button type="button" class="secondary" onclick="requestTossPayment()">결제 요청</button>
+
+    <div class="result-box">
+      <p class="result-title">PAYMENT RESULT</p>
+      <pre id="paymentResult"></pre>
     </div>
   </section>
 
