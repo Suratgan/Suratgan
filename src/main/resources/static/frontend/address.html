@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>궁중 수라간 | 배송지 등록</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="./js/config.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/address.js" defer></script>
+</head>
+<body>
+<div class="container page-shell">
+
+    <section class="hero">
+        <div class="hero-badge">주소 · Delivery Address</div>
+        <h1 class="hero-title">배달 주소 등록</h1>
+        <p class="hero-subtitle">
+            배달받을 주소와 상세 주소를 입력해주세요.
+            위도와 경도는 서버에서 자동으로 변환되어 저장됩니다.
+        </p>
+    </section>
+
+    <section class="card">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-mark">址</div>
+                <div class="brand-text">
+                    <h2>배송지 입력</h2>
+                    <p>기본 주소와 상세 주소를 입력해 배달지를 등록하세요.</p>
+                </div>
+            </div>
+            <span class="badge">ADDRESS</span>
+        </div>
+
+        <div>
+            <label for="address">기본 주소</label>
+            <input
+                    id="address"
+                    type="text"
+                    placeholder="예: 서울특별시 강남구 테헤란로 123"
+            />
+        </div>
+
+        <div>
+            <label for="detailAddress">상세 주소</label>
+            <input
+                    id="detailAddress"
+                    type="text"
+                    placeholder="예: 101동 1001호"
+            />
+        </div>
+
+        <p class="form-note">
+            주소 등록 후에는 마이페이지 또는 주문 화면에서 배송지를 선택할 수 있도록 확장할 수 있습니다.
+        </p>
+
+        <button type="button" onclick="saveAddress()">주소 등록</button>
+
+        <div class="divider"></div>
+
+        <div class="actions">
+            <a href="./app.html" class="nav-card" style="padding: 14px 18px; flex: 1; min-width: 220px;">
+                <h4 class="nav-card-title" style="margin-bottom: 4px;">메인으로 이동</h4>
+                <p class="nav-card-desc">등록 완료 후 메인 화면으로 돌아갑니다.</p>
+            </a>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="section-title">
+            <h3 class="card-title">주소 등록 결과</h3>
+        </div>
+        <p class="form-note">
+            성공 메시지 또는 오류 응답이 아래 영역에 표시됩니다.
+        </p>
+
+        <div class="result-box">
+            <p class="result-title">RESULT</p>
+            <pre id="result"></pre>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>
