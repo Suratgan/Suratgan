@@ -214,7 +214,7 @@ async function signup() {
     const password = document.getElementById("password").value.trim();
     const email = document.getElementById("email").value.trim();
     const role = document.getElementById("role").value;
-
+    const phone = document.getElementById("phone").value.trim();
 
     if (!isNicknameChecked || nickname !== checkedNickname) {
       setNicknameStatus("아이디 중복체크를 완료해주세요.", "error");
@@ -231,7 +231,7 @@ async function signup() {
     const result = await apiRequest(
         CONFIG.ENDPOINTS.signup,
         "POST",
-        { nickname, password, email, role },
+        { nickname, password, email, role, phone },
         false
     );
 
