@@ -40,6 +40,10 @@ public class ApprovePaymentService implements ApprovePayment {
         Payment payment = paymentRepository.findByOrderId(orderId)
                 .orElseGet(() -> saveOrGetExisting(orderId, approveAmount));
 
+        if (payment.getAmount() != approveAmount) {
+            throw new IllegalArgumentException("결제 금액이 주문 정보와 일치하지 않습니다. (변조 의심)");
+        }
+
         try {
             TossApprovePayment.TossApproveResponse tossRes =
                     tossApprovePayment.approve(paymentKey, orderIdForToss, amount);
