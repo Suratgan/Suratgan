@@ -29,7 +29,7 @@ function handleNicknameChange() {
   if (isNicknameChecked && currentNickname !== checkedNickname) {
     isNicknameChecked = false;
     checkedNickname = "";
-    setNicknameStatus("닉네임이 변경되었습니다. 다시 중복체크해주세요.", "error");
+    setNicknameStatus("아이디가 변경되었습니다. 다시 중복체크해주세요.", "error");
   }
 }
 
@@ -178,7 +178,7 @@ async function checkNickname() {
     const nickname = document.getElementById("nickname").value.trim();
 
     if (!nickname) {
-      setNicknameStatus("닉네임을 먼저 입력해주세요.", "error");
+      setNicknameStatus("아이디를 먼저 입력해주세요.", "error");
       return;
     }
 
@@ -189,15 +189,20 @@ async function checkNickname() {
         false
     );
 
-    isNicknameChecked = true;
-    checkedNickname = nickname;
-
     printResult(result);
-    setNicknameStatus("사용 가능한 닉네임입니다.", "success");
+
+    if (result.available) {
+      isNicknameChecked = true;
+      checkedNickname = nickname;
+      setNicknameStatus("사용 가능한 닉네임입니다.", "success");
+    } else {
+      isNicknameChecked = false;
+      checkedNickname = "";
+      setNicknameStatus(result.message || "이미 사용 중인 닉네임입니다.", "error");
+    }
   } catch (e) {
     isNicknameChecked = false;
     checkedNickname = "";
-
     printResult(e.message);
     setNicknameStatus(e.message, "error");
   }
@@ -212,8 +217,8 @@ async function signup() {
 
 
     if (!isNicknameChecked || nickname !== checkedNickname) {
-      setNicknameStatus("닉네임 중복체크를 완료해주세요.", "error");
-      alert("닉네임 중복체크를 먼저 완료해주세요.");
+      setNicknameStatus("아이디 중복체크를 완료해주세요.", "error");
+      alert("아이디 중복체크를 먼저 완료해주세요.");
       return;
     }
 
