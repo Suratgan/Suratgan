@@ -1,5 +1,6 @@
 package com.suratgan.backend.order.application;
 
+import com.suratgan.backend.global.domain.service.CustomerCheck;
 import com.suratgan.backend.global.domain.service.OwnerCheck;
 import com.suratgan.backend.global.domain.service.RoleCheck;
 import com.suratgan.backend.global.domain.service.UserDetails;
@@ -37,6 +38,7 @@ public class OrderService {
     private final OrderCheck orderCheck;
     private final RoleCheck roleCheck;
     private final OwnerCheck ownerCheck;
+    private final CustomerCheck customerCheck;
 
     /**
      * 주문 생성
@@ -88,7 +90,7 @@ public class OrderService {
             .storeName(storeInfo.getStoreName())
             .storeAddress(storeInfo.getStoreAddress())
             .orderItems(items)
-            .ownerCheck(ownerCheck)
+            .customerCheck(customerCheck)
             .orderCheck(orderCheck)
             .userDetails(userDetails)
             .build();

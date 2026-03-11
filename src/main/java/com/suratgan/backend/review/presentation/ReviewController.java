@@ -1,13 +1,14 @@
 package com.suratgan.backend.review.presentation;
 
-import com.suratgan.backend.global.domain.service.UserDetails;
 import com.suratgan.backend.review.application.ReviewService;
 import com.suratgan.backend.review.domain.ReviewId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
@@ -23,11 +24,10 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<ReviewId> createReview(
-            @RequestBody ReviewRequest request,
-            @AuthenticationPrincipal UserDetails userDetails
+            @RequestBody ReviewRequest request
     ) {
         ReviewId reviewId = reviewService.createReview(
-                request.orderId(), request.subject(), request.content(), request.score(), userDetails
+                request.orderId(), request.subject(), request.content(), request.score()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewId);
     }

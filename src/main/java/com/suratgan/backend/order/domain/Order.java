@@ -2,36 +2,19 @@ package com.suratgan.backend.order.domain;
 
 import com.suratgan.backend.global.domain.BaseEntity;
 import com.suratgan.backend.global.domain.Price;
+import com.suratgan.backend.global.domain.service.CustomerCheck;
 import com.suratgan.backend.global.domain.service.OwnerCheck;
 import com.suratgan.backend.global.domain.service.RoleCheck;
 import com.suratgan.backend.global.domain.service.UserDetails;
-import com.suratgan.backend.global.infrastructure.event.Events;
-import com.suratgan.backend.order.domain.event.OrderAcceptedEvent;
 import com.suratgan.backend.order.domain.service.OrderCheck;
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.util.StringUtils;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.util.StringUtils;
 
 /**
  * 0. 주문은 반드시 회원의 권한을 가진 사용자만 가능
@@ -80,17 +63,17 @@ public class Order extends BaseEntity {
 
     // 주문 생성
     @Builder
-    public Order(UUID orderId, String ordererName, String ordererMobile, String ordererEmail, UUID storeId, String storeName, String storeAddress, String storeTel, List<OrderItem> orderItems, String deliveryAddress, String deliveryAddressDetail, String deliveryMemo, RoleCheck roleCheck, OwnerCheck ownerCheck, OrderCheck orderCheck, UserDetails userDetails) {
+    public Order(UUID orderId, String ordererName, String ordererMobile, String ordererEmail, UUID storeId, String storeName, String storeAddress, String storeTel, List<OrderItem> orderItems, String deliveryAddress, String deliveryAddressDetail, String deliveryMemo, RoleCheck roleCheck, CustomerCheck customerCheck, OrderCheck orderCheck, UserDetails userDetails) {
 
         // 로그인 체크 여부
         checkAuthenticated(userDetails);
 
         this.id = orderId == null ? OrderId.of() : OrderId.of(orderId);
         this.orderer = new Orderer(
-            ownerCheck.getOwnerId(),
-            StringUtils.hasText(ordererName) ? ordererName : userDetails.getName(),
+                customerCheck.getCustomerId(),
+            StringUtils.hasText(ordererName) ? ordererName : customerCheck.getCustomerName(),
             StringUtils.hasText(ordererMobile) ? ordererMobile : userDetails.getMobile(),
-            StringUtils.hasText(ordererEmail) ? ordererEmail : userDetails.getEmail()
+            StringUtils.hasText(ordererEmail) ? ordererEmail : customerCheck.getCustomerEmail()
         );
         this.storeInfo = new StoreInfo(storeId, storeName, storeAddress);
         this.status = OrderStatus.ORDER_CREATING; // 주문 생성 중
