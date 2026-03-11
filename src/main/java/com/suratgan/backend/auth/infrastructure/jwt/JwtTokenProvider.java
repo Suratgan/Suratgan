@@ -24,12 +24,12 @@ public class JwtTokenProvider {
         this.accessTokenMillis = expMinutes * 60 * 1000L;
     }
 
-    public String createAccessToken(String userName, Role role) {
+    public String createAccessToken(UUID userId, Role role) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + accessTokenMillis);
 
         return Jwts.builder()
-                .setSubject(userName)
+                .setSubject(String.valueOf(userId))
                 .claim("role", role.name())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
