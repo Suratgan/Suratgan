@@ -604,3 +604,52 @@ pre {
     width: 100%;
   }
 }
+
+.danger-outline {
+  color: var(--dancheong-red);
+  border: 1px solid rgba(139, 30, 63, 0.25);
+}
+
+.danger-outline {
+  color: var(--dancheong-red);
+  border: 1px solid rgba(139, 30, 63, 0.25);
+}
+
+.address-list {
+  display: grid;
+  gap: 14px;
+}
+
+.address-card {
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(184, 138, 68, 0.34);
+  box-shadow: var(--shadow-soft);
+}
+
+.address-card-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.address-main {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: var(--dancheong-red);
+}
+
+.address-detail {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.address-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: #7c7469;
+}

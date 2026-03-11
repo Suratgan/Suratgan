@@ -9,8 +9,14 @@ const CONFIG = {
     signup: "/api/v1/users/signup",
     login: "/api/v1/auth/login",
     logout: "/api/v1/auth/logout",
-
+    addressCreate: "/api/v1/users/me/address",
+    addressList: "/api/v1/users/me/address",
+    addressDelete: "/api/v1/users/me/address",
+    addressUpdate: "/api/v1/users/me/address",
     me: "/api/v1/users/me",
+    updateMe: "/api/v1/users/me",
+    deleteMe: "/api/v1/users/me",
+    updatePassword: "/api/v1/users/me/password",
 
     categories: "/api/v1/categories",
 
