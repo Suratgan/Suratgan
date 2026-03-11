@@ -1,15 +1,16 @@
 version: '3.8'
 
 services:
+  # 1. 수라간 백엔드 애플리케이션
   suratgan-app:
     image: ${DOCKER_IMAGE_NAME}
     container_name: suratgan-api
     ports:
       - "8080:8080"
     environment:
-      - DB_URL=jdbc:postgresql://db:5432/suratgan
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_URL=jdbc:postgresql://db:5432/sura
+      - DB_USERNAME=sura
+      - DB_PASSWORD=sura
       - DB_DDL_AUTO=update
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -20,27 +21,40 @@ services:
     depends_on:
       - db
       - redis
+    networks:
+      - delivery-network
     restart: always
 
+  # 2. 레디스
   redis:
     image: redis:latest
     container_name: suratgan-redis
     ports:
       - "6379:6379"
+    networks:
+      - delivery-network
     restart: always
 
+  # 3. 데이터베이스 (기존 pgrouting 설정 유지)
   db:
-    image: postgres:15
-    container_name: suratgan-db
+    image: pgrouting/pgrouting:15-3.3-3.4.1
+    container_name: pgrouting
     environment:
-      - POSTGRES_DB=suratgan
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=sura
+      - POSTGRES_USER=sura
+      - POSTGRES_PASSWORD=sura
+      - TZ=Asia/Seoul
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - delivery_db_data:/var/lib/postgresql/data
+    networks:
+      - delivery-network
     restart: always
 
+networks:
+  delivery-network:
+    driver: bridge
+
 volumes:
-  postgres_data:
+  delivery_db_data:
