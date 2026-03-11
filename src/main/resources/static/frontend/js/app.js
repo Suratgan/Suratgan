@@ -3,26 +3,26 @@ function setText(id, data) {
       typeof data === "string" ? data : JSON.stringify(data, null, 2);
 }
 
-async function loadMe() {
-  try {
-    const me = await apiRequest(CONFIG.ENDPOINTS.me, "GET", null, true);
-    if (me.id) setUserId(me.id);
-    setText("meResult", me);
-  } catch (e) {
-    setText("meResult", e.message);
-  }
+// async function loadMe() {
+//   try {
+//     const me = await apiRequest(CONFIG.ENDPOINTS.me, "GET", null, true);
+//     if (me.id) setUserId(me.id);
+//     setText("meResult", me);
+//   } catch (e) {
+//     setText("meResult", e.message);
+//   }
+// }
+
+function goToMyPage() {
+  window.location.href = "./mypage.html";
 }
 
 async function logout() {
-  try {
     const result = await apiRequest(CONFIG.ENDPOINTS.logout, "POST", null, true);
     removeToken();
     localStorage.removeItem("userId");
-    setText("meResult", result);
     alert("로그아웃 완료");
-  } catch (e) {
-    setText("meResult", e.message);
-  }
+    window.location.href = "./login.html";
 }
 
 async function loadCategories() {

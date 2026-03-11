@@ -194,11 +194,11 @@ async function checkNickname() {
     if (result.available) {
       isNicknameChecked = true;
       checkedNickname = nickname;
-      setNicknameStatus("사용 가능한 닉네임입니다.", "success");
+      setNicknameStatus("사용 가능한 아이디입니다.", "success");
     } else {
       isNicknameChecked = false;
       checkedNickname = "";
-      setNicknameStatus(result.message || "이미 사용 중인 닉네임입니다.", "error");
+      setNicknameStatus(result.message || "이미 사용 중인 아이디입니다.", "error");
     }
   } catch (e) {
     isNicknameChecked = false;
