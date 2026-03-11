@@ -23,7 +23,7 @@
 - 김다은 / 음식점(Store) & 음식(Menu) 도메인 담당
 
 ## :building_construction: Architecture
-<img width="1197" height="723" alt="architecture" src="https://github.com/user-attachments/assets/ee643e3c-c7a6-403e-b617-dfa3774136fd" />
+<img width="964" height="588" alt="image (1)" src="https://github.com/user-attachments/assets/15d05bab-1dc9-4ea9-9da5-a1311f5c1a8d" />
 
 
 ## :hammer_and_wrench: Tech Stack
