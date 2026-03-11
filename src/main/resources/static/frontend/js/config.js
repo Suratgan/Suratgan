@@ -5,7 +5,7 @@ const CONFIG = {
 
     emailRequest: "/api/v1/email/request",
     emailVerify: "/api/v1/email/verify",
-
+    nicknameCheck: "/api/v1/users/nickname-check",
     signup: "/api/v1/users/signup",
     login: "/api/v1/auth/login",
     logout: "/api/v1/auth/logout",
