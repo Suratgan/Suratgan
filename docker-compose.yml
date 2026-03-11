@@ -1,30 +1,6 @@
 version: '3.8'
 
 services:
-  # 1. 수라간 백엔드 애플리케이션
-  suratgan-app:
-    image: ${DOCKER_IMAGE_NAME}
-    container_name: suratgan-api
-    ports:
-      - "8080:8080"
-    environment:
-      - DB_URL=jdbc:postgresql://db:5432/sura
-      - DB_USERNAME=sura
-      - DB_PASSWORD=sura
-      - DB_DDL_AUTO=update
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - TOSS_SECRET_KEY=${TOSS_SECRET_KEY}
-      - KAKAO_API_KEY=${KAKAO_API_KEY}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-    depends_on:
-      - db
-      - redis
-    networks:
-      - delivery-network
-    restart: always
-
   # 2. 레디스
   redis:
     image: redis:latest

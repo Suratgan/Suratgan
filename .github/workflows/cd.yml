@@ -78,4 +78,5 @@ jobs:
             -e KEYCLOAK_ADMIN_PASSWORD=${{ secrets.KEYCLOAK_ADMIN_PASSWORD }} \
             -e KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }} \
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            -e REDIS_HOST=${{ secrets.REDIS_HOST}} \
             ${{ env.IMAGE_URI }}
