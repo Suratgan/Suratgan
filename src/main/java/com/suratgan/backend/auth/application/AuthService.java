@@ -32,7 +32,7 @@ public class AuthService {
             throw new IllegalStateException("비밀번호가 올바르지 않습니다.");
         }
 
-        String token = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
+        String token = jwtTokenProvider.createAccessToken(user.getNickname(), user.getRole());
 
         return LoginResponseDto.builder()
                 .accessToken(token)
