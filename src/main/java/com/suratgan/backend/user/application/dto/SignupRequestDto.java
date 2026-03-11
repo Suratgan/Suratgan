@@ -18,6 +18,9 @@ public class SignupRequestDto {
     @Email
     private String email;
 
+    @NotBlank
+    private String phone;
+
     @NotNull
     private Role role;
 }

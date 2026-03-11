@@ -39,6 +39,7 @@ public class UserMeService {
                 .nickname(user.getNickname())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .phoneNumber(user.getPhoneNumber())
                 .isDeleted(user.isDeleted())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
@@ -59,7 +60,7 @@ public class UserMeService {
         }
 
         user.changeNickname(request.getNickname());
-
+        user.changePhoneNumber(request.getPhoneNumber());
         userRepository.save(user);
 
         return UserMeResponseDto.builder()

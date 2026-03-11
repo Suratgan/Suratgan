@@ -34,10 +34,13 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "phone")
+    private String phoneNumber;
+
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public static User create(String nickname, String password, String email, Role role) {
+    public static User create(String nickname, String password, String email, Role role, String phoneNumber) {
         if (role != Role.CUSTOMER && role != Role.OWNER) {
             throw new IllegalArgumentException("가입 가능한 role은 CUSTOMER 또는 OWNER입니다.");
         }
@@ -46,8 +49,13 @@ public class User extends BaseEntity {
                 .email(email)
                 .password(password)
                 .role(role)
+                .phoneNumber(phoneNumber)
                 .isDeleted(false)
                 .build();
+    }
+
+    public void changePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public void changeNickname(String newNickname) {

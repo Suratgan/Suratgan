@@ -15,6 +15,7 @@ public class UserMeResponseDto {
     private String nickname;
     private String email;
     private Role role;
+    private String phoneNumber;
     private boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
