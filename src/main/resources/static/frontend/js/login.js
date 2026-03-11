@@ -34,6 +34,7 @@ async function login() {
 
     printResult({ login: result, me });
     alert("로그인 성공");
+    window.location.href = "./app.html";
   } catch (e) {
     printResult(e.message);
     alert(e.message);
