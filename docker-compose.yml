@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  suratgan-app:
+    image: ${DOCKER_IMAGE_NAME}
+    container_name: suratgan-api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/suratgan
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DDL_AUTO=update
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TOSS_SECRET_KEY=${TOSS_SECRET_KEY}
+      - KAKAO_API_KEY=${KAKAO_API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      - db
+      - redis
+    restart: always
+
+  redis:
+    image: redis:latest
+    container_name: suratgan-redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  db:
+    image: postgres:15
+    container_name: suratgan-db
+    environment:
+      - POSTGRES_DB=suratgan
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:

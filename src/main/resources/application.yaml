@@ -3,7 +3,7 @@ spring:
     name: Suratgan
   data:
     redis:
-      host: localhost
+      host: ${REDIS_HOST:localhost}
       port: 6379
   datasource:
     url: ${DB_URL}
