@@ -17,10 +17,10 @@
 - GitHub Actions 기반 CI/CD 환경 구성
 
 ## :busts_in_silhouette: Role Assignment
-황민익 / 결제(Payment) & 리뷰(Review) 도메인, 아키텍처 및 AWS 인프라 설계 담당
-김종표 / 주문(Order) & 리뷰(Review) 도메인 담당
-박성준 / 사용자(User) 도메인 및 인증/인가 로직 담당
-김다은 / 음식점(Store) & 음식(Menu) 도메인 담당
+- 황민익 / 결제(Payment) & 리뷰(Review) 도메인, 아키텍처 및 AWS 인프라 설계 담당
+- 김종표 / 주문(Order) & 리뷰(Review) 도메인 담당
+- 박성준 / 사용자(User) 도메인 및 인증/인가 로직 담당
+- 김다은 / 음식점(Store) & 음식(Menu) 도메인 담당
 
 ## :building_construction: Architecture
 <img width="1197" height="723" alt="architecture" src="https://github.com/user-attachments/assets/ee643e3c-c7a6-403e-b617-dfa3774136fd" />
